@@ -14,28 +14,45 @@ To run this tool successfully, make sure that you meet the following requirement
 2. Browser: Firefox or Chrome (latest version)
 3. [Python](https://www.python.org/downloads/): Version 3.11.4
 
-## Setup and usage
+## Download
 ### Download with Git
-1. Make sure you have [Git](https://git-scm.com/downloads) installed for your OS
+1. Make sure you have [Git](https://git-scm.com/downloads) installed for your OS.
 2. Clone the repository with:
 ```
 git clone https://github.com/ak28pujy/MW-CRG.git
 ```
 ### Download without Git
-1. Click on the green "Code" button and then on "Download ZIP"
-2. Extract the zip-file into a folder
-### Setup
-1. Navigate to the directory where you downloaded the repository
+1. Click on the green "Code" button and then on "Download ZIP".
+2. Extract the zip-file into a folder.
+## Setup
+### Windows
+1. Start PowerShell as administrator:
+     1. Press the Windows key
+     2. Type "PowerShell"
+     3. Right-click on "Windows PowerShell" and select "Run as administrator"
+2. execute the following command:
+```
+Set-ExecutionPolicy RemoteSigned
+```
+3. You will probably be prompted for confirmation. Please accept and close the powershell.
+4. Navigate to the directory where you downloaded the repository.
+5. Open a CMD, Bash, or Powershell window in the directory and enter:
+```
+python -m venv venv
+```
+```
+.\venv\Scripts\activate
+```
+6. Install the required packages with:
+```
+pip install -r requirements.txt
+```
+### macOS and Linux
+1. Navigate to the directory where you downloaded the repository.
 2. Open a CMD, Bash, or Powershell window in the directory and enter:
 ```
 python -m venv venv
 ```
-Windows:
-```
-.\venv\Scripts\activate
-```
-**OR**
-macOS and Linux:
 ```
 source venv/bin/activate
 ```
@@ -43,8 +60,8 @@ source venv/bin/activate
 ```
 pip install -r requirements.txt
 ```
-### Usage
-1. Navigate to the directory where you downloaded the repository
+## Usage
+1. Navigate to the directory where you downloaded the repository.
 2. Open a CMD, Bash, or Powershell window in the directory and enter:
 ```
 python app.py
