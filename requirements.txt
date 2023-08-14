@@ -1,0 +1,11 @@
+aiohttp==3.8.5
+beautifulsoup4==4.12.2
+feedparser==6.0.10
+google_api_python_client==2.95.0
+openai==0.27.8
+PyQt6==6.5.2
+PyQt6_sip==13.5.2
+python-dotenv==1.0.0
+reportlab==4.0.4
+selenium==4.11.2
+tiktoken==0.4.0
