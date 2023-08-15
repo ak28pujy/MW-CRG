@@ -12,7 +12,9 @@ To run this tool successfully, make sure that you meet the following requirement
   - Linux (x86_64/AMD64)
   - MacOS (x86_64/AMD64 or ARM)
 2. Browser: Firefox or Chrome (latest version)
-3. [Python](https://www.python.org/downloads/): Version 3.11.4
+3. Python Version 3.11.4: Can be downloaded [here](https://www.python.org/downloads/)
+4. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys)
+5. Google Custom Search JSON API: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
 
 ## Download
 ### Download with Git
@@ -66,6 +68,7 @@ pip install -r requirements.txt
 ```
 python app.py
 ```
+3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ## Files in the repository
 main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company (e.g. BMW) and generate a summary report.
 
