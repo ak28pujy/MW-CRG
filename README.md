@@ -14,15 +14,12 @@ To run this tool successfully, make sure that you meet the following requirement
 2. Browser: Firefox or Chrome (latest version)
 3. Python Version 3.11.4: Can be downloaded [here](https://www.python.org/downloads/)
 4. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys)
-5. Google Custom Search JSON API: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
+5. Google Custom Search JSON API Keys: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
 
 ## Download
 ### Download with Git
 1. Make sure you have [Git](https://git-scm.com/downloads) installed for your OS.
-2. Clone the repository with:
-```
-git clone https://github.com/ak28pujy/MW-CRG.git
-```
+2. Clone the repository with: ```git clone https://github.com/ak28pujy/MW-CRG.git```
 ### Download without Git
 1. Click on the green "Code" button and then on "Download ZIP".
 2. Extract the zip-file into a folder.
@@ -64,10 +61,7 @@ pip install -r requirements.txt
 ```
 ## Usage
 1. Navigate to the directory where you downloaded the repository.
-2. Open a CMD, Bash, or Powershell window in the directory and enter:
-```
-python app.py
-```
+2. Open a CMD, Bash, or Powershell window in the directory and enter: ```python app.py```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ## Files in the repository
 main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company (e.g. BMW) and generate a summary report.
@@ -78,4 +72,8 @@ pdf.py: Help functions for creating PDF documents from text data.
 
 counttokens.py: Helper functions for counting tokens in a given message or list of messages, useful for working with the OpenAI API.
 
-requirements.txt: Lists all the dependencies of the project. To install all the required packages, run pip install -r requirements.txt.
+requirements.txt: Lists all the dependencies of the project. To install all the required packages, run: ```pip install -r requirements.txt```
+
+[Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
+
+[ChromeDriver](https://chromedriver.chromium.org): Version 114.0.5735.90
