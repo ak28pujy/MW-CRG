@@ -26,6 +26,7 @@ GOOGLE_API_KEY = 'GOOGLE_API_KEY'
 GOOGLE_CSE_ID = 'GOOGLE_CSE_ID'
 MAX_CONCURRENT_TASKS = 'MAX_CONCURRENT_TASKS'
 MAX_CONCURRENT_URLS = 'MAX_CONCURRENT_URLS'
+PAGE_LOAD_TIMEOUT = 'PAGE_LOAD_TIMEOUT'
 
 OUTPUT_PATH = './output/'
 DRIVERS_PATH = './driver/'
@@ -36,6 +37,7 @@ google_api_key = os.getenv(GOOGLE_API_KEY)
 google_cse_id = os.getenv(GOOGLE_CSE_ID)
 semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 3)))
 max_concurrent_urls = int(os.getenv(MAX_CONCURRENT_URLS, 5))
+page_load_timeout = int(os.getenv(PAGE_LOAD_TIMEOUT, 15))
 
 
 async def limited_execute(task, *args):
@@ -145,7 +147,7 @@ def get_page_content(browser, url):
         print("\nError: Browser instance is None")
         return ""
     try:
-        browser.set_page_load_timeout(10)
+        browser.set_page_load_timeout(page_load_timeout)
         browser.get(url)
         if '.google.com' in url:
             try:

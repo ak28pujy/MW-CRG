@@ -26,6 +26,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.value3_input = None
         self.value4_input = None
         self.value5_input = None
+        self.value6_input = None
         self.setWindowTitle('Settings')
         self.initialize_inputs()
         self.initialize_layout()
@@ -36,6 +37,7 @@ class SettingsWindow(QtWidgets.QWidget):
         self.value3_input = create_input_line('GOOGLE_CSE_ID')
         self.value4_input = create_input_line('MAX_CONCURRENT_TASKS')
         self.value5_input = create_input_line('MAX_CONCURRENT_URLS')
+        self.value6_input = create_input_line('PAGE_LOAD_TIMEOUT')
 
     def initialize_layout(self):
         layout = QtWidgets.QVBoxLayout()
@@ -50,11 +52,12 @@ class SettingsWindow(QtWidgets.QWidget):
 
     def create_form_layout(self):
         form_layout = QtWidgets.QFormLayout()
-        form_layout.addRow("OPENAI_API_KEY:", self.value1_input)
-        form_layout.addRow("GOOGLE_API_KEY:", self.value2_input)
-        form_layout.addRow("GOOGLE_CSE_ID:", self.value3_input)
-        form_layout.addRow("MAX_CONCURRENT_TASKS:", self.value4_input)
-        form_layout.addRow("MAX_CONCURRENT_URLS:", self.value5_input)
+        form_layout.addRow("OPENAI API KEY:", self.value1_input)
+        form_layout.addRow("GOOGLE API KEY:", self.value2_input)
+        form_layout.addRow("GOOGLE CSE ID:", self.value3_input)
+        form_layout.addRow("MAX CONCURRENT TASKS:", self.value4_input)
+        form_layout.addRow("MAX CONCURRENT URLS:", self.value5_input)
+        form_layout.addRow("PAGE LOAD TIMEOUT (in sec.):", self.value6_input)
         return form_layout
 
     def create_save_button(self):
@@ -69,6 +72,7 @@ class SettingsWindow(QtWidgets.QWidget):
         set_key('.env', 'GOOGLE_CSE_ID', self.value3_input.text())
         set_key('.env', 'MAX_CONCURRENT_TASKS', self.value4_input.text())
         set_key('.env', 'MAX_CONCURRENT_URLS', self.value5_input.text())
+        set_key('.env', 'PAGE_LOAD_TIMEOUT', self.value6_input.text())
         QtWidgets.QMessageBox.information(self, "Saved", "The settings have been saved.")
         self.close()
 
