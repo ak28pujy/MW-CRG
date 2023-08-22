@@ -89,7 +89,7 @@ def get_browser(browser):
 def google_search(search_term, api_key, cse_id, **kwargs):
     try:
         service = build("customsearch", "v1", developerKey=api_key)
-        res = service.cse().list(q=search_term, cx=cse_id, **kwargs).execute()
+        res = service.cse().list(q=search_term, cx=cse_id, **kwargs, cr='countryDE', gl='de', hl='de').execute()
         if 'items' in res:
             return [(i['title'], i['link']) for i in res['items'] if 'title' in i and 'link' in i]
         else:
@@ -284,6 +284,12 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
     if not (company and model and language):
         print(f"\nInvalid input. Please check the parameters.")
         return
+    if num_urls_google_search > 10:
+        print(f"\nInvalid input. Number of URLs from Google Search must not be higher than 10.")
+        return
+    if num_urls_google_news > 15:
+        print(f"\nInvalid input. Number of URLs from Google News must not be higher than 15.")
+        return
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
     results_google_search = []
@@ -313,20 +319,13 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
 
 
 if __name__ == "__main__":
-    company_1 = "BMW"
-    search_terms_google_search_2 = [f"{company_1} Unternehmensprofil",
-                                    f"{company_1} Produkt- und Dienstleistungsportfolio",
-                                    f"{company_1} Unique Selling Point",
-                                    f"{company_1} Mitarbeiterzahl und Organisationsstruktur",
-                                    f"{company_1} Geschäftsbericht und Marktposition",
-                                    f"{company_1} Mission, Vision und Geschäftshighlights",
-                                    f"{company_1} Zukunftsprojekte und soziale Verantwortung",
-                                    f"{company_1} Auszeichnungen und Reputation"]
+    company_1 = "NOW GMBH"
+    search_terms_google_search_2 = [company_1]
     search_terms_google_news_3 = [company_1]
     model_4 = "gpt-3.5-turbo-16k"  # "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"
-    language_5 = "german"  # "English", "German", "French"
-    num_urls_google_search_6 = 2
-    num_urls_google_news_7 = 2
+    language_5 = "German"  # "English", "German", "French"
+    num_urls_google_search_6 = 10
+    num_urls_google_news_7 = 10
     prompt_as_txt_8 = True
     report_as_txt_9 = True
     report_as_pdf_10 = True
