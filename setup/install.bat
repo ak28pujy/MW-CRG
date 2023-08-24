@@ -42,9 +42,19 @@ if %choose%==n goto Menu
 goto Success
 
 :Start
+if not exist "venv\" goto Fail
 cd start
 start run.vbs
 goto Exit
+
+:Fail
+cls
+echo.
+echo Please install the requirements first.
+echo.
+echo Press any key to continue.
+pause >nul
+goto Menu
 
 :Admin
 cls
