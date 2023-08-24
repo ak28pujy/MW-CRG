@@ -18,6 +18,14 @@ def create_input_line(env_variable):
     return QtWidgets.QLineEdit(os.getenv(env_variable))
 
 
+def create_scrollable_input(env_variable):
+    text_edit = QtWidgets.QTextEdit()
+    text_edit.setPlainText(os.getenv(env_variable))
+    text_edit.setVerticalScrollBarPolicy(QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOn)
+    text_edit.setMaximumHeight(60)
+    return text_edit
+
+
 class SettingsWindow(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
@@ -165,10 +173,12 @@ class MyWidget(QtWidgets.QWidget):
 
     def initialize_inputs(self):
         self.company_input = create_input_line('COMPANY_NAME')
-        self.search_terms_google_search_input = create_input_line('SEARCH_TERMS_GOOGLE_SEARCH')
-        self.search_terms_google_news_input = create_input_line('SEARCH_TERMS_GOOGLE_NEWS')
+        self.search_terms_google_search_input = create_scrollable_input('SEARCH_TERMS_GOOGLE_SEARCH')
+        self.search_terms_google_news_input = create_scrollable_input('SEARCH_TERMS_GOOGLE_NEWS')
         self.num_urls_google_search_input = QtWidgets.QSpinBox(self)
+        self.num_urls_google_search_input.valueChanged.connect(self.max_google_search_urls)
         self.num_urls_google_news_input = QtWidgets.QSpinBox(self)
+        self.num_urls_google_news_input.valueChanged.connect(self.max_google_news_urls)
         self.model_dropdown = QComboBox(self)
         self.language_dropdown = QComboBox(self)
         self.log_console = QtWidgets.QPlainTextEdit(self)
@@ -179,8 +189,8 @@ class MyWidget(QtWidgets.QWidget):
         self.set_default_values()
 
     def set_default_values(self):
-        self.num_urls_google_search_input.setValue(1)
-        self.num_urls_google_news_input.setValue(1)
+        self.num_urls_google_search_input.setValue(5)
+        self.num_urls_google_news_input.setValue(10)
         self.model_dropdown.addItems(["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"])
         self.model_dropdown.setCurrentIndex(1)
         self.language_dropdown.addItems(["English", "German", "French"])
@@ -189,6 +199,14 @@ class MyWidget(QtWidgets.QWidget):
         self.prompt_as_txt_checkbox.setChecked(True)
         self.report_as_txt_checkbox.setChecked(True)
         self.report_as_pdf_checkbox.setChecked(True)
+
+    def max_google_search_urls(self):
+        if self.num_urls_google_search_input.value() > 10:
+            self.num_urls_google_search_input.setValue(10)
+
+    def max_google_news_urls(self):
+        if self.num_urls_google_news_input.value() > 20:
+            self.num_urls_google_news_input.setValue(20)
 
     def initialize_layout(self):
         layout = QtWidgets.QVBoxLayout()
@@ -258,8 +276,8 @@ class MyWidget(QtWidgets.QWidget):
 
     def generate_report(self):
         company = self.company_input.text().strip()
-        search_terms_google_search = self.search_terms_google_search_input.text().strip()
-        search_terms_google_news = self.search_terms_google_news_input.text().strip()
+        search_terms_google_search = self.search_terms_google_search_input.toPlainText().strip()
+        search_terms_google_news = self.search_terms_google_news_input.toPlainText().strip()
         model = self.model_dropdown.currentText()
         language = self.language_dropdown.currentText()
         num_urls_google_search = self.num_urls_google_search_input.value()
