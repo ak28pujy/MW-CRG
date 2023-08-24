@@ -121,7 +121,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.info_window = None
         self.settings_window = None
         self.setWindowTitle('Company Report Generator')
-        self.setMinimumSize(500, 600)
+        self.setFixedSize(500, 750)
 
         self.init_ui()
         self.central_widget = MyWidget()
@@ -221,14 +221,14 @@ class MyWidget(QtWidgets.QWidget):
         self.setLayout(layout)
 
     def create_company_group(self):
-        company_group = QGroupBox("Company:")
+        company_group = QGroupBox("Company")
         company_layout = QFormLayout()
         company_layout.addRow(self.company_input)
         company_group.setLayout(company_layout)
         return company_group
 
     def create_search_group(self):
-        search_group = QGroupBox("Search Terms:")
+        search_group = QGroupBox("Search Terms")
         search_layout = QFormLayout()
         search_layout.addRow("Google Search:", self.search_terms_google_search_input)
         search_layout.addRow("Google News:", self.search_terms_google_news_input)
@@ -236,7 +236,7 @@ class MyWidget(QtWidgets.QWidget):
         return search_group
 
     def create_urls_group(self):
-        urls_group = QGroupBox("Number of URLs:")
+        urls_group = QGroupBox("Number of URLs")
         urls_layout = QFormLayout()
         urls_layout.addRow("Google Search:", self.num_urls_google_search_input)
         urls_layout.addRow("Google News:", self.num_urls_google_news_input)
@@ -244,7 +244,7 @@ class MyWidget(QtWidgets.QWidget):
         return urls_group
 
     def create_model_group(self):
-        model_group = QGroupBox("Model && Language:")
+        model_group = QGroupBox("Model && Language")
         model_layout = QFormLayout()
         model_layout.addRow("Model:", self.model_dropdown)
         model_layout.addRow("Language:", self.language_dropdown)
@@ -252,7 +252,7 @@ class MyWidget(QtWidgets.QWidget):
         return model_group
 
     def create_output_group(self):
-        output_group = QGroupBox("Output:")
+        output_group = QGroupBox("Output")
         output_layout = QtWidgets.QVBoxLayout()
         output_layout.addWidget(self.prompt_as_txt_checkbox)
         output_layout.addWidget(self.report_as_txt_checkbox)
@@ -336,6 +336,8 @@ class MainThread(QThread):
 
 if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle("Fusion")
     window = MyApp()
     window.show()
     sys.exit(app.exec())
+
