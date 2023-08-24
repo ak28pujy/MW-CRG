@@ -131,6 +131,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def init_ui(self):
         menubar = self.menuBar()
+        self.menuBar().setNativeMenuBar(False)
         menu = menubar.addMenu('Menu')
 
         settings_action = QtGui.QAction('Settings', self)
@@ -340,4 +341,3 @@ if __name__ == '__main__':
     window = MyApp()
     window.show()
     sys.exit(app.exec())
-
