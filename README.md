@@ -61,7 +61,9 @@ pip install -r requirements.txt
 ```
 ## Usage
 1. Navigate to the directory where you downloaded the repository.
-2. Open a CMD, Bash, or Powershell window in the directory and enter: ```python app.py```
+2. Open a CMD, Bash, or Powershell window in the directory and enter:
+    1. Windows: ```.\venv\Scripts\activate```, macOS and Linux: ```source venv/bin/activate```
+    2. ```python app.py```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ## Files in the repository
 main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company (e.g. BMW) and generate a summary report.
