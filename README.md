@@ -25,6 +25,11 @@ To run this tool successfully, make sure that you meet the following requirement
 2. Extract the zip-file into a folder.
 ## Setup
 ### Windows
+#### Option 1 (Recommended)
+1. Navigate to the directory where you downloaded the repository.
+2. Open the folder ```setup```.
+3. Right-click on ```install.bat``` and select "Run as administrator".
+#### Option 2
 1. Start PowerShell as administrator:
      1. Press the Windows key
      2. Type "PowerShell"
