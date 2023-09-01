@@ -3,7 +3,7 @@ import os
 import sys
 
 from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtCore import pyqtSignal, QThread
+from PyQt6.QtCore import pyqtSignal, QThread, Qt
 from PyQt6.QtWidgets import QComboBox, QGroupBox, QFormLayout
 from dotenv import load_dotenv, set_key
 
@@ -121,7 +121,9 @@ class MyApp(QtWidgets.QMainWindow):
         self.info_window = None
         self.settings_window = None
         self.setWindowTitle('Company Report Generator')
-        self.setFixedSize(500, 750)
+        screen = QtWidgets.QApplication.primaryScreen()
+        screen_size = screen.size()
+        self.setMinimumSize(int(screen_size.width() // 2.5), int(screen_size.height() // 1.25))
 
         self.init_ui()
         self.central_widget = MyWidget()
@@ -336,7 +338,9 @@ class MainThread(QThread):
 
 
 if __name__ == '__main__':
+    os.environ["QT_ENABLE_HIGHDPI_SCALING"] = "0"
     app = QtWidgets.QApplication(sys.argv)
+    app.setHighDpiScaleFactorRoundingPolicy(Qt.HighDpiScaleFactorRoundingPolicy.PassThrough)
     app.setStyle("Fusion")
     window = MyApp()
     window.show()
