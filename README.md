@@ -25,12 +25,6 @@ To run this tool successfully, make sure that you meet the following requirement
 2. Extract the zip-file into a folder.
 ## Setup
 ### Windows
-#### Option 1 (Recommended)
-1. Navigate to the directory where you downloaded the repository.
-2. Open the folder ```setup```.
-3. Right-click on ```install.bat``` and select "Run as administrator".
-4. Follow the instructions in the script.
-#### Option 2
 1. Start PowerShell as administrator:
      1. Press the Windows key
      2. Type "PowerShell"
@@ -53,11 +47,6 @@ python -m venv venv
 pip install -r requirements.txt
 ```
 ### macOS and Linux
-#### Option 1 (Recommended)
-1. Open a terminal window.
-2. Navigate to the folder ```setup``` (E.g. ```cd download/mw-crg-main/setup```), make the script executable (```chmod 755 install.sh```) and run install.sh (```./install.sh```). See documentation [here](https://support.apple.com/guide/terminal/apdd100908f-06b3-4e63-8a87-32e71241bab4/mac) for more information.
-3. Follow the instructions in the script.
-#### Option 2
 1. Navigate to the directory where you downloaded the repository.
 2. Open a CMD, Bash, or Powershell window in the directory and enter:
 ```
@@ -89,4 +78,4 @@ requirements.txt: Lists all the dependencies of the project. To install all the 
 
 [Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
 
-[ChromeDriver](https://chromedriver.chromium.org): Version 114.0.5735.90
+[ChromeDriver](https://chromedriver.chromium.org): Version 117.0.5938.88
