@@ -1,6 +1,7 @@
 import asyncio
 import os
 import platform
+import urllib.error
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
 from datetime import date
@@ -100,9 +101,18 @@ def google_search(search_term, api_key, cse_id, **kwargs):
 
 
 def google_news_rss(search_term, num):
-    url = f"https://news.google.com/rss/search?q={urllib.parse.quote(search_term)}&hl=de&gl=DE&ceid=DE:de"
-    feed = feedparser.parse(url)
-    return [(entry.title, entry.link) for entry in feed.entries[:num]]
+    try:
+        url = f"https://news.google.com/rss/search?q={urllib.parse.quote(search_term)}&hl=de&gl=DE&ceid=DE:de"
+        feed = feedparser.parse(url)
+        if not feed.entries:
+            raise ValueError("No news entries found for this search query.")
+        return [(entry.title, entry.link) for entry in feed.entries[:num]]
+    except urllib.error.URLError as e:
+        print(f"Error accessing the URL: {e.reason}")
+        return []
+    except Exception as e:
+        print(f"An error has occurred: {str(e)}")
+        return []
 
 
 async def execute_google_search(search_terms, search_func, num_results):
@@ -180,7 +190,7 @@ def generate_report(info_dict, company, model, language, prompt_as_txt, report_a
     if prompt_as_txt:
         write_content_to_file(company, prompt, 'Prompt')
     if report_as_txt:
-        write_content_to_file(company, response_content, 'Bericht')
+        write_content_to_file(company, response_content, 'Report')
     if report_as_pdf:
         write_report_to_pdf(company, response_content, report_as_txt)
     return response_content
@@ -193,7 +203,7 @@ def write_content_to_file(company, content, file_type):
 
 
 def write_report_to_pdf(company, content, report_as_txt):
-    file_path = get_file_path('Bericht', company)
+    file_path = get_file_path('Report', company)
     with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
         file.write(content)
     pdf.text_to_pdf(f'{file_path}.txt', f'{file_path}.pdf')
