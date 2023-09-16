@@ -9,7 +9,9 @@ from datetime import date
 import feedparser
 import openai
 from bs4 import BeautifulSoup
+from docx import Document
 from dotenv import load_dotenv
+from fpdf import FPDF
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from selenium import webdriver
@@ -19,7 +21,6 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 
 import counttokens
 import openai_prompt
-import pdf
 
 OPENAI_API_KEY = 'OPENAI_API_KEY'
 GOOGLE_API_KEY = 'GOOGLE_API_KEY'
@@ -188,27 +189,36 @@ def generate_report(info_dict, company, model, language, prompt_as_txt, report_a
     print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
     print(f"\nResult for the company {company}:\n\n{response_content}")
     if prompt_as_txt:
-        write_content_to_file(company, prompt, 'Prompt')
+        write_content_to_txt(company, prompt, 'Prompt')
+        write_content_to_docx(company, prompt, 'Prompt')
     if report_as_txt:
-        write_content_to_file(company, response_content, 'Report')
+        write_content_to_txt(company, response_content, 'Report')
+        write_content_to_docx(company, response_content, 'Report')
     if report_as_pdf:
-        write_report_to_pdf(company, response_content, report_as_txt)
+        write_report_to_pdf(company, response_content)
     return response_content
 
 
-def write_content_to_file(company, content, file_type):
+def write_content_to_txt(company, content, file_type):
     file_path = get_file_path(file_type, company)
     with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
         file.write(str(content))
 
 
-def write_report_to_pdf(company, content, report_as_txt):
+def write_content_to_docx(company, content, file_type):
+    file_path = get_file_path(file_type, company)
+    doc = Document()
+    doc.add_paragraph(str(content))
+    doc.save(f'{file_path}.docx')
+
+
+def write_report_to_pdf(company, content):
     file_path = get_file_path('Report', company)
-    with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
-        file.write(content)
-    pdf.text_to_pdf(f'{file_path}.txt', f'{file_path}.pdf')
-    if not report_as_txt:
-        os.remove(f'{file_path}.txt')
+    pdf = FPDF()
+    pdf.add_page()
+    pdf.set_font("Arial")
+    pdf.multi_cell(0, 8, content)
+    pdf.output(f'{file_path}.pdf')
 
 
 def get_file_path(file_type, company):
