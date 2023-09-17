@@ -32,7 +32,7 @@ async def summarize_each_url(info, url, company, model, language):
         prompt = [{"role": "user",
                    "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, und "
                               "erstelle eine prägnante Zusammenfassung der relevanten Informationen."},
-                  {"role": "user", "content": f"Inhalt der Webseite:\n\n{info}"},
+                  {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
                   {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, konkrete "
                                               "und nützliche Details, und vermeide dabei irrelevante oder "
                                               f"redundante Inhalte. Die Antwort sollte in {language} verfasst sein."}]
@@ -85,7 +85,7 @@ def summarize(info_dict, company, model, language):
                     {"role": "user", "content": "Hier sind zusätzliche Informationen, die ich auf einer Webseite "
                                                 f"({url}) gefunden habe, welche {company} erwähnt. "
                                                 "Diese wurden bereits von der OpenAI API in einer anderen Anfrage "
-                                                f"verarbeitet: {info}"})
+                                                f"verarbeitet:\n\n\n{info}\n\n\n"})
         prompt.append({"role": "user", "content": "Integriere bitte nur die relevanten Informationen bezüglich der "
                                                   f"oben genannten Aspekte in den Steckbrief von {company}. "
                                                   "Sollten einige Informationen fehlen, nutze dein allgemeines Wissen, "

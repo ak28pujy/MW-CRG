@@ -1,6 +1,7 @@
 import asyncio
 import os
 import platform
+import re
 import urllib.error
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
@@ -178,6 +179,8 @@ def get_page_content(browser, url):
         page_text = BeautifulSoup(browser.page_source, 'html.parser').get_text()
     except Exception as e:
         print(f"\nError fetching the URL {url}: {e}")
+    page_text = re.sub(' +', ' ', page_text)
+    page_text = re.sub('\n+', '\n', page_text).strip()
     return page_text
 
 
