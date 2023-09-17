@@ -257,29 +257,23 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
         return
     if not os.path.exists(OUTPUT_PATH):
         os.makedirs(OUTPUT_PATH)
-    results_google_search = []
-    results_google_news = []
-
-    if search_terms_google_search and num_urls_google_search >= 1:
-        tasks_google_search = [limited_execute(execute_google_search, [term], google_search, num_urls_google_search) for
-                               term in search_terms_google_search]
-        results_google_search = await asyncio.gather(*tasks_google_search)
-    if search_terms_google_news and num_urls_google_news >= 1:
-        tasks_google_news = [limited_execute(execute_google_news_rss, [term], google_news_rss, num_urls_google_news) for
-                             term in search_terms_google_news]
-        results_google_news = await asyncio.gather(*tasks_google_news)
-
+    results_google_search, results_google_news = [], []
+    tasks_google_search = [limited_execute(execute_google_search, [term], google_search, num_urls_google_search) for
+                           term in
+                           search_terms_google_search] if search_terms_google_search and num_urls_google_search >= 1 else []
+    tasks_google_news = [limited_execute(execute_google_news_rss, [term], google_news_rss, num_urls_google_news) for
+                         term in
+                         search_terms_google_news] if search_terms_google_news and num_urls_google_news >= 1 else []
+    if tasks_google_search or tasks_google_news:
+        results_google_search, results_google_news = await asyncio.gather(asyncio.gather(*tasks_google_search),
+                                                                          asyncio.gather(*tasks_google_news))
     info_dict_google_search = {key: value for result in results_google_search for key, value in result.items()}
     info_dict_google_news = {key: value for result in results_google_news for key, value in result.items()}
-
     info_dict_all = {key: info_dict_google_search.get(key, []) + info_dict_google_news.get(key, []) for key in
                      set(info_dict_google_search) | set(info_dict_google_news)}
-
     for search_term, info_url_list in info_dict_all.items():
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
-
     info_dict_all = await openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language)
-
     generate_report(info_dict_all, company, model, language, prompt_as_txt, report_as_txt, report_as_pdf)
 
 
