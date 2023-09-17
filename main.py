@@ -5,14 +5,11 @@ import re
 import urllib.error
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
-from datetime import date
 
 import feedparser
 import openai
 from bs4 import BeautifulSoup
-from docx import Document
 from dotenv import load_dotenv
-from fpdf import FPDF
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from selenium import webdriver
@@ -22,6 +19,7 @@ from selenium.webdriver.firefox.service import Service as FirefoxService
 
 import counttokens
 import openai_prompt
+import output
 
 OPENAI_API_KEY = 'OPENAI_API_KEY'
 GOOGLE_API_KEY = 'GOOGLE_API_KEY'
@@ -30,7 +28,6 @@ MAX_CONCURRENT_TASKS = 'MAX_CONCURRENT_TASKS'
 MAX_CONCURRENT_URLS = 'MAX_CONCURRENT_URLS'
 PAGE_LOAD_TIMEOUT = 'PAGE_LOAD_TIMEOUT'
 
-OUTPUT_PATH = './output/'
 DRIVERS_PATH = './driver/'
 
 load_dotenv()
@@ -184,71 +181,18 @@ def get_page_content(browser, url):
     return page_text
 
 
-def generate_report(info_dict, company, model, language, summary_as_txt, summary_as_pdf,
-                    report_as_txt, report_as_pdf, full_outputs):
+def generate_report(info_dict, company, model, language):
     response_content, prompt, response = openai_prompt.summarize(info_dict, company, model, language)
     print(f"\nModel: {model}")
     print(
         f"\n{counttokens.num_tokens_from_messages(prompt, model)} prompt tokens counted by num_tokens_from_messages().")
     print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
     print(f"\nResult for the company {company}:\n\n{response_content}")
-    if summary_as_txt:
-        write_content_to_txt(company, full_outputs, 'Summary')
-        write_content_to_docx(company, full_outputs, 'Summary')
-    if summary_as_pdf:
-        write_content_to_pdf(company, full_outputs, 'Summary')
-    if report_as_txt:
-        write_content_to_txt(company, response_content, 'Report')
-        write_content_to_docx(company, response_content, 'Report')
-    if report_as_pdf:
-        write_content_to_pdf(company, response_content, 'Report')
     return response_content
 
 
-def write_content_to_txt(company, content, file_type):
-    file_path = get_file_path(file_type, company)
-    try:
-        with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
-            file.write(str(content))
-    except PermissionError:
-        print(f"\nNo permission to write the .txt file in the path: {file_path}.")
-    except Exception as e:
-        print(f"\nThere was a problem saving the .txt file: {e}")
-
-
-def write_content_to_docx(company, content, file_type):
-    file_path = get_file_path(file_type, company)
-    try:
-        doc = Document()
-        doc.add_paragraph(str(content))
-        doc.save(f'{file_path}.docx')
-    except PermissionError:
-        print(f"\nNo permission to write the .docx file in the path: {file_path}.")
-    except Exception as e:
-        print(f"\nThere was a problem saving the .docx file: {e}")
-
-
-def write_content_to_pdf(company, content, file_type):
-    file_path = get_file_path(file_type, company)
-    try:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial")
-        pdf.multi_cell(0, 8, content)
-        pdf.output(f'{file_path}.pdf')
-    except PermissionError:
-        print(f"\nNo permission to write the .pdf file in the path: {file_path}.")
-    except Exception as e:
-        print(f"\nThere was a problem saving the .pdf file: {e}")
-
-
-def get_file_path(file_type, company):
-    return f'{OUTPUT_PATH}{date.today()} - {company} - {file_type}'
-
-
-async def main(company, search_terms_google_search, search_terms_google_news, model, language,
-               num_urls_google_search, num_urls_google_news, summary_as_txt, summary_as_pdf,
-               report_as_txt, report_as_pdf, company_info):
+async def main(company, search_terms_google_search, search_terms_google_news, model, language, num_urls_google_search,
+               num_urls_google_news, summary_as_txt, summary_as_pdf, report_as_txt, report_as_pdf, company_info):
     get_system_info()
     if not (company and model and language):
         print(f"\nInvalid input. Please check the parameters.")
@@ -259,8 +203,6 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
     if num_urls_google_news > 15:
         print(f"\nInvalid input. Number of URLs from Google News must not be higher than 15.")
         return
-    if not os.path.exists(OUTPUT_PATH):
-        os.makedirs(OUTPUT_PATH)
     results_google_search, results_google_news = [], []
     tasks_google_search = [limited_execute(execute_google_search, [term], google_search, num_urls_google_search) for
                            term in
@@ -279,8 +221,9 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
     info_dict_all, full_outputs = await (
         openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language, company_info))
-    generate_report(info_dict_all, company, model, language, summary_as_txt, summary_as_pdf,
-                    report_as_txt, report_as_pdf, full_outputs)
+    response_content = generate_report(info_dict_all, company, model, language)
+    output.generate_output(company, full_outputs, summary_as_txt, summary_as_pdf, report_as_txt, report_as_pdf,
+                           response_content)
 
 
 if __name__ == "__main__":
