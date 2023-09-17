@@ -244,7 +244,7 @@ def get_file_path(file_type, company):
 
 
 async def main(company, search_terms_google_search, search_terms_google_news, model, language, num_urls_google_search,
-               num_urls_google_news, prompt_as_txt, report_as_txt, report_as_pdf):
+               num_urls_google_news, prompt_as_txt, report_as_txt, report_as_pdf, company_info):
     get_system_info()
     if not (company and model and language):
         print(f"\nInvalid input. Please check the parameters.")
@@ -273,7 +273,8 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
                      set(info_dict_google_search) | set(info_dict_google_news)}
     for search_term, info_url_list in info_dict_all.items():
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
-    info_dict_all = await openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language)
+    info_dict_all = await (
+        openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language, company_info))
     generate_report(info_dict_all, company, model, language, prompt_as_txt, report_as_txt, report_as_pdf)
 
 
@@ -288,6 +289,7 @@ if __name__ == "__main__":
     prompt_as_txt_8 = True
     report_as_txt_9 = True
     report_as_pdf_10 = True
+    company_info_11 = ""
     asyncio.run(main(company_1, search_terms_google_search_2, search_terms_google_news_3, model_4, language_5,
                      num_urls_google_search_6, num_urls_google_news_7, prompt_as_txt_8, report_as_txt_9,
-                     report_as_pdf_10))
+                     report_as_pdf_10, company_info_11))

@@ -4,7 +4,7 @@ import openai
 from aiohttp import ClientSession
 
 
-async def execute_summarize_each_url(info_dict, company, model, language):
+async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
     async with ClientSession() as session:
         openai.aiosession.set(session)
@@ -12,7 +12,7 @@ async def execute_summarize_each_url(info_dict, company, model, language):
         for search_term, info_url_list in info_dict.items():
             summarized_info[search_term] = []
             for info, url in info_url_list:
-                task = summarize_each_url(info, url, company, model, language)
+                task = summarize_each_url(info, url, company, model, language, company_info)
                 tasks.append((task, search_term))
         try:
             results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
@@ -27,16 +27,30 @@ async def execute_summarize_each_url(info_dict, company, model, language):
     return summarized_info
 
 
-async def summarize_each_url(info, url, company, model, language):
+async def summarize_each_url(info, url, company, model, language, company_info):
     try:
-        prompt = [{"role": "user",
-                   "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, und "
-                              "erstelle eine prägnante Zusammenfassung der relevanten Informationen."},
-                  {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
-                  {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, konkrete "
-                                              "und nützliche Details, und vermeide dabei irrelevante oder "
-                                              f"redundante Inhalte. Die Antwort sollte in {language} verfasst sein."}]
-        response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
+        base_prompt = [{"role": "user",
+                        "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, "
+                                   "und erstelle eine prägnante Zusammenfassung der relevanten Informationen. "
+                                   f"Folgende Informationen über {company} sind unter anderem relevant: "
+                                   "Unternehmensname, Gründungsdatum , Gründer, Aktueller CEO, Hauptsitz, Branche, "
+                                   "Website des Unternehmens, Hauptprodukte und -dienstleistungen, "
+                                   "USP oder Alleinstellungsmerkmale, Aussagen von Branchenexperten, Journalisten oder "
+                                   "anderen relevante Dritten, Anzahl der Mitarbeiter, Organisationsstruktur, "
+                                   "Geschäftszahlen, Marktposition, Unternehmensmission und -vision, "
+                                   "Geschäftliche Höhepunkte, Zukunftsprojekte, Soziale Verantwortung, "
+                                   "Auszeichnungen und Anerkennungen."},
+                       {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
+                       {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
+                                                   "konkrete und nützliche Details, und vermeide dabei irrelevante "
+                                                   "oder redundante Inhalte. "
+                                                   f"Die Antwort sollte in {language} verfasst sein."}]
+        if company_info:
+            company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
+                                                              f"{company}: {company_info}."}
+            base_prompt.insert(1, company_info_prompt)
+        print(base_prompt)
+        response = await openai.ChatCompletion.acreate(model=model, messages=base_prompt, temperature=1, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
         print(f"\n{url}:\n", response['choices'][0]['message']['content'])
         summary = response['choices'][0]['message']['content']
