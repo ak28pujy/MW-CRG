@@ -12,7 +12,7 @@ To run this tool successfully, make sure that you meet the following requirement
   - Linux (x86_64/AMD64)
   - MacOS (x86_64/AMD64 or ARM)
 2. Browser: Firefox or Chrome (latest version)
-3. Python Version 3.11.4: Can be downloaded [here](https://www.python.org/downloads/)
+3. Python Version 3.11 or newer: Can be downloaded [here](https://www.python.org/downloads/)
 4. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys)
 5. Google Custom Search JSON API Keys: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
 
