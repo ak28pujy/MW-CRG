@@ -184,21 +184,24 @@ def get_page_content(browser, url):
     return page_text
 
 
-def generate_report(info_dict, company, model, language, prompt_as_txt, report_as_txt, report_as_pdf):
+def generate_report(info_dict, company, model, language, summary_as_txt, summary_as_pdf,
+                    report_as_txt, report_as_pdf, full_outputs):
     response_content, prompt, response = openai_prompt.summarize(info_dict, company, model, language)
     print(f"\nModel: {model}")
     print(
         f"\n{counttokens.num_tokens_from_messages(prompt, model)} prompt tokens counted by num_tokens_from_messages().")
     print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
     print(f"\nResult for the company {company}:\n\n{response_content}")
-    if prompt_as_txt:
-        write_content_to_txt(company, prompt, 'Prompt')
-        write_content_to_docx(company, prompt, 'Prompt')
+    if summary_as_txt:
+        write_content_to_txt(company, full_outputs, 'Summary')
+        write_content_to_docx(company, full_outputs, 'Summary')
+    if summary_as_pdf:
+        write_content_to_pdf(company, full_outputs, 'Summary')
     if report_as_txt:
         write_content_to_txt(company, response_content, 'Report')
         write_content_to_docx(company, response_content, 'Report')
     if report_as_pdf:
-        write_report_to_pdf(company, response_content)
+        write_content_to_pdf(company, response_content, 'Report')
     return response_content
 
 
@@ -225,8 +228,8 @@ def write_content_to_docx(company, content, file_type):
         print(f"\nThere was a problem saving the .docx file: {e}")
 
 
-def write_report_to_pdf(company, content):
-    file_path = get_file_path('Report', company)
+def write_content_to_pdf(company, content, file_type):
+    file_path = get_file_path(file_type, company)
     try:
         pdf = FPDF()
         pdf.add_page()
@@ -243,8 +246,9 @@ def get_file_path(file_type, company):
     return f'{OUTPUT_PATH}{date.today()} - {company} - {file_type}'
 
 
-async def main(company, search_terms_google_search, search_terms_google_news, model, language, num_urls_google_search,
-               num_urls_google_news, prompt_as_txt, report_as_txt, report_as_pdf, company_info):
+async def main(company, search_terms_google_search, search_terms_google_news, model, language,
+               num_urls_google_search, num_urls_google_news, summary_as_txt, summary_as_pdf,
+               report_as_txt, report_as_pdf, company_info):
     get_system_info()
     if not (company and model and language):
         print(f"\nInvalid input. Please check the parameters.")
@@ -273,9 +277,10 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
                      set(info_dict_google_search) | set(info_dict_google_news)}
     for search_term, info_url_list in info_dict_all.items():
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
-    info_dict_all = await (
+    info_dict_all, full_outputs = await (
         openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language, company_info))
-    generate_report(info_dict_all, company, model, language, prompt_as_txt, report_as_txt, report_as_pdf)
+    generate_report(info_dict_all, company, model, language, summary_as_txt, summary_as_pdf,
+                    report_as_txt, report_as_pdf, full_outputs)
 
 
 if __name__ == "__main__":
@@ -286,10 +291,11 @@ if __name__ == "__main__":
     language_5 = "German"  # "English", "German", "French"
     num_urls_google_search_6 = 3
     num_urls_google_news_7 = 3
-    prompt_as_txt_8 = True
-    report_as_txt_9 = True
-    report_as_pdf_10 = True
-    company_info_11 = ""
+    summary_as_txt_8 = True
+    summary_as_pdf_9 = True
+    report_as_txt_10 = True
+    report_as_pdf_11 = True
+    company_info_12 = ""
     asyncio.run(main(company_1, search_terms_google_search_2, search_terms_google_news_3, model_4, language_5,
-                     num_urls_google_search_6, num_urls_google_news_7, prompt_as_txt_8, report_as_txt_9,
-                     report_as_pdf_10, company_info_11))
+                     num_urls_google_search_6, num_urls_google_news_7, summary_as_txt_8, summary_as_pdf_9,
+                     report_as_txt_10, report_as_pdf_11, company_info_12))

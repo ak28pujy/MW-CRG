@@ -6,25 +6,30 @@ from aiohttp import ClientSession
 
 async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
+    full_outputs = ""
+
     async with ClientSession() as session:
         openai.aiosession.set(session)
         tasks = []
         for search_term, info_url_list in info_dict.items():
             summarized_info[search_term] = []
+
             for info, url in info_url_list:
                 task = summarize_each_url(info, url, company, model, language, company_info)
                 tasks.append((task, search_term))
         try:
             results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
-            for result, search_term in zip(results, [st for _, st in tasks]):
-                if isinstance(result, Exception):
-                    print(f"An error has occurred at URL: {search_term} - {str(result)}")
+            for (summary, url, full_output), search_term in zip(results, [st for _, st in tasks]):
+                if isinstance(summary, Exception):
+                    print(f"An error has occurred at URL: {search_term} - {str(summary)}")
                 else:
-                    summarized_info[search_term].append(result)
+                    summarized_info[search_term].append((summary, url))
+                    full_outputs += full_output + "\n"
         except Exception as e:
             print(f"An unexpected error has occurred: {str(e)}")
+
     await openai.aiosession.get().close()
-    return summarized_info
+    return summarized_info, full_outputs
 
 
 async def summarize_each_url(info, url, company, model, language, company_info):
@@ -49,12 +54,12 @@ async def summarize_each_url(info, url, company, model, language, company_info):
             company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
                                                               f"{company}: {company_info}."}
             base_prompt.insert(1, company_info_prompt)
-        print(base_prompt)
         response = await openai.ChatCompletion.acreate(model=model, messages=base_prompt, temperature=1, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
-        print(f"\n{url}:\n", response['choices'][0]['message']['content'])
+        full_output = f"\n{url}:\n\n{response['choices'][0]['message']['content']}"
         summary = response['choices'][0]['message']['content']
-        return summary, url
+        print(full_output)
+        return summary, url, full_output
     except Exception as e:
         print(f"An error has occurred at URL: {url} - {str(e)}")
         return e
