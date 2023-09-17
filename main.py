@@ -110,10 +110,10 @@ def google_news_rss(search_term, num):
             raise ValueError("No news entries found for this search query.")
         return [(entry.title, entry.link) for entry in feed.entries[:num]]
     except urllib.error.URLError as e:
-        print(f"Error accessing the URL: {e.reason}")
+        print(f"\nError accessing the URL: {e.reason}")
         return []
     except Exception as e:
-        print(f"An error has occurred: {str(e)}")
+        print(f"\nAn error has occurred: {str(e)}")
         return []
 
 
@@ -145,7 +145,7 @@ def execute_extract_text_from_url(url_list, browsers):
                 results.extend(list(executor.map(lambda url: extract_text_from_url(url, browser), url_list)))
             break
         except Exception as e:
-            print(f"Error using {browser_info['driver'].__name__}: {e}")
+            print(f"\nError using {browser_info['driver'].__name__}: {e}")
             if browser:
                 browser.quit()
                 browser = None
@@ -204,24 +204,39 @@ def generate_report(info_dict, company, model, language, prompt_as_txt, report_a
 
 def write_content_to_txt(company, content, file_type):
     file_path = get_file_path(file_type, company)
-    with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
-        file.write(str(content))
+    try:
+        with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
+            file.write(str(content))
+    except PermissionError:
+        print(f"\nNo permission to write the .txt file in the path: {file_path}.")
+    except Exception as e:
+        print(f"\nThere was a problem saving the .txt file: {e}")
 
 
 def write_content_to_docx(company, content, file_type):
     file_path = get_file_path(file_type, company)
-    doc = Document()
-    doc.add_paragraph(str(content))
-    doc.save(f'{file_path}.docx')
+    try:
+        doc = Document()
+        doc.add_paragraph(str(content))
+        doc.save(f'{file_path}.docx')
+    except PermissionError:
+        print(f"\nNo permission to write the .docx file in the path: {file_path}.")
+    except Exception as e:
+        print(f"\nThere was a problem saving the .docx file: {e}")
 
 
 def write_report_to_pdf(company, content):
     file_path = get_file_path('Report', company)
-    pdf = FPDF()
-    pdf.add_page()
-    pdf.set_font("Arial")
-    pdf.multi_cell(0, 8, content)
-    pdf.output(f'{file_path}.pdf')
+    try:
+        pdf = FPDF()
+        pdf.add_page()
+        pdf.set_font("Arial")
+        pdf.multi_cell(0, 8, content)
+        pdf.output(f'{file_path}.pdf')
+    except PermissionError:
+        print(f"\nNo permission to write the .pdf file in the path: {file_path}.")
+    except Exception as e:
+        print(f"\nThere was a problem saving the .pdf file: {e}")
 
 
 def get_file_path(file_type, company):
