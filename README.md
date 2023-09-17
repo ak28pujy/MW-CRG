@@ -66,11 +66,9 @@ pip install -r requirements.txt
     2. ```python app.py```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ## Files in the repository
-main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company (e.g. BMW) and generate a summary report.
+main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company and generate a summary report.
 
 app.py: A GUI application created with PyQt6. Allows users to enter various settings and search criteria and start the extraction process.
-
-pdf.py: Help functions for creating PDF documents from text data.
 
 counttokens.py: Helper functions for counting tokens in a given message or list of messages, useful for working with the OpenAI API.
 
