@@ -1,4 +1,16 @@
 # MW-CRG
+## Table of Contents
+- [Introduction](https://github.com/ak28pujy/MW-CRG#introduction)
+- [Requirements](https://github.com/ak28pujy/MW-CRG#requirements)
+- [Download](https://github.com/ak28pujy/MW-CRG#download)
+  - [Download with Git](https://github.com/ak28pujy/MW-CRG#download-with-git)
+  - [Download without Git](https://github.com/ak28pujy/MW-CRG#download-without-git)
+- [Setup](https://github.com/ak28pujy/MW-CRG#setup)
+  - [Windows](https://github.com/ak28pujy/MW-CRG#windows)
+  - [macOS and Linux](https://github.com/ak28pujy/MW-CRG#macos-and-linux)
+- [Usage](https://github.com/ak28pujy/MW-CRG#usage)
+- [Files in the repository](https://github.com/ak28pujy/MW-CRG#files-in-the-repository)
+## Introduction
 This project is a comprehensive tool for automatic data collection and analysis for businesses. It combines web scraping, Google search, RSS feed analysis and the OpenAI API to collect relevant information about a given company.
 
 With the integrated GUI application, users can set specific search criteria and preferences to start the data extraction process. The collected data is analyzed and can be output in both text and PDF formats.
