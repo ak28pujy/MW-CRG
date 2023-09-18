@@ -1,12 +1,12 @@
 aiohttp
 beautifulsoup4
 feedparser
-fpdf
 google_api_python_client
 openai
 PyQt6
 PyQt6_sip
 python-dotenv
 python_docx
+reportlab
 selenium
 tiktoken

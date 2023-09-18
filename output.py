@@ -2,7 +2,10 @@ import os
 from datetime import date
 
 from docx import Document
-from fpdf import FPDF
+from reportlab.lib.pagesizes import letter
+from reportlab.lib.styles import getSampleStyleSheet
+from reportlab.lib.units import inch
+from reportlab.platypus import SimpleDocTemplate, Paragraph
 
 OUTPUT_PATH = './output/'
 
@@ -24,9 +27,9 @@ def generate_output(company, full_outputs, summary_as_txt, summary_as_pdf, repor
 
 
 def write_content_to_txt(company, content, file_type):
-    file_path = get_file_path(file_type, company)
+    file_path = get_file_path(file_type, company) + '.txt'
     try:
-        with open(f'{file_path}.txt', "w", encoding='utf-8') as file:
+        with open(file_path, "w", encoding='utf-8') as file:
             file.write(str(content))
     except PermissionError:
         print(f"\nNo permission to write the .txt file in the path: {file_path}.")
@@ -35,11 +38,11 @@ def write_content_to_txt(company, content, file_type):
 
 
 def write_content_to_docx(company, content, file_type):
-    file_path = get_file_path(file_type, company)
+    file_path = get_file_path(file_type, company) + '.docx'
     try:
         doc = Document()
         doc.add_paragraph(str(content))
-        doc.save(f'{file_path}.docx')
+        doc.save(file_path)
     except PermissionError:
         print(f"\nNo permission to write the .docx file in the path: {file_path}.")
     except Exception as e:
@@ -47,13 +50,17 @@ def write_content_to_docx(company, content, file_type):
 
 
 def write_content_to_pdf(company, content, file_type):
-    file_path = get_file_path(file_type, company)
+    file_path = get_file_path(file_type, company) + '.pdf'
     try:
-        pdf = FPDF()
-        pdf.add_page()
-        pdf.set_font("Arial")
-        pdf.multi_cell(0, 8, content)
-        pdf.output(f'{file_path}.pdf')
+        doc = SimpleDocTemplate(file_path, pagesize=letter, rightMargin=inch, leftMargin=inch, topMargin=inch,
+                                bottomMargin=inch)
+        styles = getSampleStyleSheet()
+        story = []
+        for para_text in content.split('\n'):
+            if not para_text.strip():
+                para_text = '\u00A0'
+            story.append(Paragraph(para_text, styles["Normal"]))
+        doc.build(story)
     except PermissionError:
         print(f"\nNo permission to write the .pdf file in the path: {file_path}.")
     except Exception as e:
