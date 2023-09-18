@@ -84,6 +84,10 @@ app.py: A GUI application created with PyQt6. Allows users to enter various sett
 
 counttokens.py: Helper functions for counting tokens in a given message or list of messages, useful for working with the OpenAI API.
 
+openai_prompt.py: Provides functions to interact with the OpenAI API. Specializes in extracting and summarizing content from URLs using the OpenAI API.
+
+output.py: Contains functions for generating and saving output in various formats (TXT, PDF, DOCX). Uses specific libraries for creating documents.
+
 requirements.txt: Lists all the dependencies of the project. To install all the required packages, run: ```pip install -r requirements.txt```
 
 [Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
