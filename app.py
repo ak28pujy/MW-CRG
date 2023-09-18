@@ -157,13 +157,15 @@ class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
         self.company_input = None
+        self.company_info_input = None
         self.search_terms_google_search_input = None
         self.search_terms_google_news_input = None
         self.num_urls_google_search_input = None
         self.num_urls_google_news_input = None
         self.model_dropdown = None
         self.language_dropdown = None
-        self.prompt_as_txt_checkbox = None
+        self.summary_as_txt_checkbox = None
+        self.summary_as_pdf_checkbox = None
         self.report_as_txt_checkbox = None
         self.report_as_pdf_checkbox = None
         self.log_console = None
@@ -176,6 +178,7 @@ class MyWidget(QtWidgets.QWidget):
 
     def initialize_inputs(self):
         self.company_input = create_input_line('COMPANY_NAME')
+        self.company_info_input = create_scrollable_input('COMPANY_INFO')
         self.search_terms_google_search_input = create_scrollable_input('SEARCH_TERMS_GOOGLE_SEARCH')
         self.search_terms_google_news_input = create_scrollable_input('SEARCH_TERMS_GOOGLE_NEWS')
         self.num_urls_google_search_input = QtWidgets.QSpinBox(self)
@@ -185,7 +188,8 @@ class MyWidget(QtWidgets.QWidget):
         self.model_dropdown = QComboBox(self)
         self.language_dropdown = QComboBox(self)
         self.log_console = QtWidgets.QPlainTextEdit(self)
-        self.prompt_as_txt_checkbox = QtWidgets.QCheckBox("Prompt as TXT", self)
+        self.summary_as_txt_checkbox = QtWidgets.QCheckBox("Summary as TXT", self)
+        self.summary_as_pdf_checkbox = QtWidgets.QCheckBox("Summary as PDF", self)
         self.report_as_txt_checkbox = QtWidgets.QCheckBox("Report as TXT", self)
         self.report_as_pdf_checkbox = QtWidgets.QCheckBox("Report as PDF", self)
 
@@ -199,7 +203,8 @@ class MyWidget(QtWidgets.QWidget):
         self.language_dropdown.addItems(["English", "German", "French"])
         self.language_dropdown.setCurrentIndex(1)
         self.log_console.setReadOnly(True)
-        self.prompt_as_txt_checkbox.setChecked(True)
+        self.summary_as_txt_checkbox.setChecked(True)
+        self.summary_as_pdf_checkbox.setChecked(True)
         self.report_as_txt_checkbox.setChecked(True)
         self.report_as_pdf_checkbox.setChecked(True)
 
@@ -226,7 +231,8 @@ class MyWidget(QtWidgets.QWidget):
     def create_company_group(self):
         company_group = QGroupBox("Company")
         company_layout = QFormLayout()
-        company_layout.addRow(self.company_input)
+        company_layout.addRow("Name:", self.company_input)
+        company_layout.addRow(f"Info to be\ncollected:", self.company_info_input)
         company_group.setLayout(company_layout)
         return company_group
 
@@ -257,7 +263,8 @@ class MyWidget(QtWidgets.QWidget):
     def create_output_group(self):
         output_group = QGroupBox("Output")
         output_layout = QtWidgets.QVBoxLayout()
-        output_layout.addWidget(self.prompt_as_txt_checkbox)
+        output_layout.addWidget(self.summary_as_txt_checkbox)
+        output_layout.addWidget(self.summary_as_pdf_checkbox)
         output_layout.addWidget(self.report_as_txt_checkbox)
         output_layout.addWidget(self.report_as_pdf_checkbox)
         output_group.setLayout(output_layout)
@@ -279,13 +286,15 @@ class MyWidget(QtWidgets.QWidget):
 
     def generate_report(self):
         company = self.company_input.text().strip()
+        company_info = self.company_info_input.toPlainText().strip()
         search_terms_google_search = self.search_terms_google_search_input.toPlainText().strip()
         search_terms_google_news = self.search_terms_google_news_input.toPlainText().strip()
         model = self.model_dropdown.currentText()
         language = self.language_dropdown.currentText()
         num_urls_google_search = self.num_urls_google_search_input.value()
         num_urls_google_news = self.num_urls_google_news_input.value()
-        prompt_as_txt = self.prompt_as_txt_checkbox.isChecked()
+        summary_as_txt = self.summary_as_txt_checkbox.isChecked()
+        summary_as_pdf = self.summary_as_pdf_checkbox.isChecked()
         report_as_txt = self.report_as_txt_checkbox.isChecked()
         report_as_pdf = self.report_as_pdf_checkbox.isChecked()
 
@@ -294,6 +303,7 @@ class MyWidget(QtWidgets.QWidget):
             return
 
         set_key('.env', 'COMPANY_NAME', company)
+        set_key('.env', 'COMPANY_INFO', company_info)
         set_key('.env', 'SEARCH_TERMS_GOOGLE_SEARCH', search_terms_google_search)
         set_key('.env', 'SEARCH_TERMS_GOOGLE_NEWS', search_terms_google_news)
         search_terms_google_search = search_terms_google_search.split(',') if search_terms_google_search else []
@@ -301,8 +311,8 @@ class MyWidget(QtWidgets.QWidget):
 
         self.status_bar.showMessage("Loading...")
         self.main_thread = MainThread(company, search_terms_google_search, search_terms_google_news, model, language,
-                                      num_urls_google_search, num_urls_google_news, prompt_as_txt, report_as_txt,
-                                      report_as_pdf)
+                                      num_urls_google_search, num_urls_google_news, summary_as_txt, summary_as_pdf,
+                                      report_as_txt, report_as_pdf, company_info)
         self.main_thread.log_signal.connect(self.add_log)
         self.main_thread.finished.connect(self.stop_loading)
         self.main_thread.start()
@@ -312,7 +322,8 @@ class MainThread(QThread):
     log_signal = pyqtSignal(str)
 
     def __init__(self, company, search_terms_google_search, search_terms_google_news, model, language,
-                 num_urls_google_search, num_urls_google_news, prompt_as_txt, report_as_txt, report_as_pdf):
+                 num_urls_google_search, num_urls_google_news, summary_as_txt, summary_as_pdf, report_as_txt,
+                 report_as_pdf, company_info):
         super().__init__()
         self.company = company
         self.search_terms_google_search = search_terms_google_search
@@ -321,9 +332,11 @@ class MainThread(QThread):
         self.language = language
         self.num_urls_google_search = num_urls_google_search
         self.num_urls_google_news = num_urls_google_news
-        self.prompt_as_txt = prompt_as_txt
+        self.summary_as_txt = summary_as_txt
+        self.summary_as_pdf = summary_as_pdf
         self.report_as_txt = report_as_txt
         self.report_as_pdf = report_as_pdf
+        self.company_info = company_info
 
     def run(self):
         stream = EmittingStream()
@@ -331,8 +344,8 @@ class MainThread(QThread):
         sys.stdout = stream
 
         asyncio.run(main(self.company, self.search_terms_google_search, self.search_terms_google_news, self.model,
-                         self.language, self.num_urls_google_search, self.num_urls_google_news, self.prompt_as_txt,
-                         self.report_as_txt, self.report_as_pdf))
+                         self.language, self.num_urls_google_search, self.num_urls_google_news, self.summary_as_txt,
+                         self.summary_as_pdf, self.report_as_txt, self.report_as_pdf, self.company_info))
 
         sys.stdout = sys.__stdout__
 
