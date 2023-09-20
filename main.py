@@ -2,6 +2,7 @@ import asyncio
 import os
 import platform
 import re
+import time
 import urllib.error
 import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
@@ -37,8 +38,6 @@ google_cse_id = os.getenv(GOOGLE_CSE_ID)
 semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 3)))
 max_concurrent_urls = int(os.getenv(MAX_CONCURRENT_URLS, 5))
 page_load_timeout = int(os.getenv(PAGE_LOAD_TIMEOUT, 15))
-
-google_cookie_accepted = False
 
 
 async def limited_execute(task, *args):
@@ -133,50 +132,37 @@ async def execute_google_news_rss(search_terms, search_func, num_results):
 
 
 def execute_extract_text_from_url(url_list, browsers):
-    results = []
-    browser = None
-    for browser_info in browsers:
+    with ThreadPoolExecutor(max_workers=max_concurrent_urls) as executor:
+        return list(executor.map(lambda url: extract_text_from_url(url, browsers), url_list))
+
+
+def extract_text_from_url(url, browsers):
+    for browser in browsers:
         try:
-            browser = get_browser(browser_info)
-            with ThreadPoolExecutor(max_workers=max_concurrent_urls) as executor:
-                results.extend(list(executor.map(lambda url: extract_text_from_url(url, browser), url_list)))
-            break
+            browser = get_browser(browser)
+            page_content = get_page_content(browser, url)
+            if page_content:
+                return page_content
         except Exception as e:
-            print(f"\nError using {browser_info['driver'].__name__}: {e}")
-            if browser:
-                browser.quit()
-                browser = None
-    if browser:
-        browser.quit()
-    return results
-
-
-def extract_text_from_url(url, browser):
-    page_content = get_page_content(browser, url)
-    if page_content:
-        return page_content
+            print(f"\nError using {browser['driver'].__name__}: {e}")
     return ""
 
 
 def get_page_content(browser, url):
-    global google_cookie_accepted
     page_text = ""
-    if not browser:
-        print("\nError: Browser instance is None")
-        return ""
     try:
-        browser.set_page_load_timeout(page_load_timeout)
         browser.get(url)
-        if not google_cookie_accepted and '.google.com' in url:
+        browser.set_page_load_timeout(page_load_timeout)
+        if '.google.com' in url:
             try:
                 browser.find_element(By.XPATH, "//.[@aria-label='Alle akzeptieren']").click()
-                google_cookie_accepted = True
-                browser.set_page_load_timeout(page_load_timeout)
+                time.sleep(5)
             except Exception as e:
                 print(f"\nError clicking the accept button on Google: {e}")
         page_text = BeautifulSoup(browser.page_source, 'html.parser').get_text()
     except Exception as e:
         print(f"\nError fetching the URL {url}: {e}")
+    browser.quit()
     page_text = re.sub(' +', ' ', page_text)
     page_text = re.sub('\n+', '\n', page_text).strip()
     return page_text

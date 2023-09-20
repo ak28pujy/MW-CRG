@@ -51,7 +51,6 @@ async def summarize_each_url(info, url, company, model, language, company_info):
         full_output = f"\n{url}:\n\n{response['choices'][0]['message']['content']}"
         summary = response['choices'][0]['message']['content']
         print(full_output)
-        print(prompt)
         return summary, url, full_output
     except Exception as e:
         print(f"An error has occurred at URL: {url} - {str(e)}")
