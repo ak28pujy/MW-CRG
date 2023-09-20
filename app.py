@@ -4,7 +4,7 @@ import sys
 
 from PyQt6 import QtWidgets, QtGui, QtCore
 from PyQt6.QtCore import pyqtSignal, QThread, Qt
-from PyQt6.QtWidgets import QComboBox, QGroupBox, QFormLayout
+from PyQt6.QtWidgets import QComboBox, QGroupBox, QFormLayout, QSizePolicy
 from dotenv import load_dotenv, set_key
 
 from main import main
@@ -218,12 +218,32 @@ class MyWidget(QtWidgets.QWidget):
 
     def initialize_layout(self):
         layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(self.create_company_group())
-        layout.addWidget(self.create_search_group())
-        layout.addWidget(self.create_urls_group())
-        layout.addWidget(self.create_model_group())
-        layout.addWidget(self.create_output_group())
-        layout.addWidget(self.log_console)
+
+        company_group = self.create_company_group()
+        company_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        layout.addWidget(company_group)
+
+        search_group = self.create_search_group()
+        search_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        layout.addWidget(search_group)
+
+        vertical_layout = QtWidgets.QVBoxLayout()
+        urls_group = self.create_urls_group()
+        urls_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        vertical_layout.addWidget(urls_group)
+        model_group = self.create_model_group()
+        model_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        vertical_layout.addWidget(model_group)
+
+        horizontal_layout = QtWidgets.QHBoxLayout()
+        output_group = self.create_output_group()
+        output_group.setSizePolicy(QSizePolicy.Policy.Preferred, QSizePolicy.Policy.Fixed)
+        horizontal_layout.addLayout(vertical_layout)
+        horizontal_layout.addWidget(output_group)
+        layout.addLayout(horizontal_layout)
+
+        self.log_console.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
+        layout.addWidget(self.log_console, 1)
         layout.addWidget(self.status_bar)
         layout.addWidget(self.create_generate_button())
         self.setLayout(layout)
