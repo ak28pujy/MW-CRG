@@ -50,6 +50,19 @@ def get_system_info():
     print('Architecture:', platform.machine())
 
 
+def validate_inputs(company, model, language, num_urls_google_search, num_urls_google_news):
+    if not (company and model and language):
+        print(f"\nInvalid input. Please check the parameters.")
+        return False
+    if num_urls_google_search > 10:
+        print(f"\nInvalid input. Number of URLs from Google Search must not be higher than 10.")
+        return False
+    if num_urls_google_news > 15:
+        print(f"\nInvalid input. Number of URLs from Google News must not be higher than 15.")
+        return False
+    return True
+
+
 def get_driver_path(driver_name):
     os_name = platform.system()
     arch = 'intel' if 'x86_64' in platform.machine() or 'AMD64' in platform.machine() else 'arm'
@@ -181,14 +194,7 @@ def generate_report(info_dict, company, model, language, company_info):
 async def main(company, search_terms_google_search, search_terms_google_news, model, language, num_urls_google_search,
                num_urls_google_news, summary_as_txt, summary_as_pdf, report_as_txt, report_as_pdf, company_info):
     get_system_info()
-    if not (company and model and language):
-        print(f"\nInvalid input. Please check the parameters.")
-        return
-    if num_urls_google_search > 10:
-        print(f"\nInvalid input. Number of URLs from Google Search must not be higher than 10.")
-        return
-    if num_urls_google_news > 15:
-        print(f"\nInvalid input. Number of URLs from Google News must not be higher than 15.")
+    if not validate_inputs(company, model, language, num_urls_google_search, num_urls_google_news):
         return
     results_google_search, results_google_news = [], []
     tasks_google_search = [limited_execute(execute_google_search, [term], google_search, num_urls_google_search) for
