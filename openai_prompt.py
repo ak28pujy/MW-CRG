@@ -34,38 +34,31 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
 
 async def summarize_each_url(info, url, company, model, language, company_info):
     try:
-        base_prompt = [{"role": "user",
-                        "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, "
-                                   "und erstelle eine prägnante Zusammenfassung der relevanten Informationen. "
-                                   f"Folgende Informationen über {company} sind unter anderem relevant: "
-                                   "Unternehmensname, Gründungsdatum , Gründer, Aktueller CEO, Hauptsitz, Branche, "
-                                   "Website des Unternehmens, Hauptprodukte und -dienstleistungen, "
-                                   "USP oder Alleinstellungsmerkmale, Aussagen von Branchenexperten, Journalisten oder "
-                                   "anderen relevante Dritten, Anzahl der Mitarbeiter, Organisationsstruktur, "
-                                   "Geschäftszahlen, Marktposition, Unternehmensmission und -vision, "
-                                   "Geschäftliche Höhepunkte, Zukunftsprojekte, Soziale Verantwortung, "
-                                   "Auszeichnungen und Anerkennungen."},
-                       {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
-                       {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
-                                                   "konkrete und nützliche Details, und vermeide dabei irrelevante "
-                                                   "oder redundante Inhalte. "
-                                                   f"Die Antwort sollte in {language} verfasst sein."}]
+        prompt = [{"role": "user",
+                   "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, "
+                              "und erstelle eine prägnante Zusammenfassung der relevanten Informationen."},
+                  {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
+                  {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
+                                              "konkrete und nützliche Details, und vermeide dabei irrelevante "
+                                              "oder redundante Inhalte. "
+                                              f"Die Antwort sollte in {language} verfasst sein."}]
         if company_info:
             company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
                                                               f"{company}: {company_info}."}
-            base_prompt.insert(1, company_info_prompt)
-        response = await openai.ChatCompletion.acreate(model=model, messages=base_prompt, temperature=1, top_p=1.0, n=1,
+            prompt.insert(1, company_info_prompt)
+        response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
         full_output = f"\n{url}:\n\n{response['choices'][0]['message']['content']}"
         summary = response['choices'][0]['message']['content']
         print(full_output)
+        print(prompt)
         return summary, url, full_output
     except Exception as e:
         print(f"An error has occurred at URL: {url} - {str(e)}")
         return e
 
 
-def summarize(info_dict, company, model, language):
+def summarize(info_dict, company, model, language, company_info):
     try:
         prompt = [{"role": "system",
                    "content": "Du bist ein kenntnisreicher KI-Assistent, spezialisiert auf Unternehmensanalysen."},
@@ -111,6 +104,10 @@ def summarize(info_dict, company, model, language):
                                                   "wenn es sinnvoll und zutreffend ist, ansonsten lass das "
                                                   "betreffende Feld leer. Gehe dabei systematisch vor und "
                                                   f"antworte bitte in {language}."})
+        if company_info:
+            company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
+                                                              f"{company}: {company_info}."}
+            prompt.insert(2, company_info_prompt)
         response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
                                                 frequency_penalty=0.0, presence_penalty=0.0)
         return response['choices'][0]['message']['content'], prompt, response

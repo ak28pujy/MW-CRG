@@ -171,6 +171,7 @@ def get_page_content(browser, url):
             try:
                 browser.find_element(By.XPATH, "//.[@aria-label='Alle akzeptieren']").click()
                 google_cookie_accepted = True
+                browser.set_page_load_timeout(page_load_timeout)
             except Exception as e:
                 print(f"\nError clicking the accept button on Google: {e}")
         page_text = BeautifulSoup(browser.page_source, 'html.parser').get_text()
@@ -181,8 +182,8 @@ def get_page_content(browser, url):
     return page_text
 
 
-def generate_report(info_dict, company, model, language):
-    response_content, prompt, response = openai_prompt.summarize(info_dict, company, model, language)
+def generate_report(info_dict, company, model, language, company_info):
+    response_content, prompt, response = openai_prompt.summarize(info_dict, company, model, language, company_info)
     print(f"\nModel: {model}")
     print(
         f"\n{counttokens.num_tokens_from_messages(prompt, model)} prompt tokens counted by num_tokens_from_messages().")
@@ -221,7 +222,7 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
     info_dict_all, full_outputs = await (
         openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language, company_info))
-    response_content = generate_report(info_dict_all, company, model, language)
+    response_content = generate_report(info_dict_all, company, model, language, company_info)
     output.generate_output(company, full_outputs, summary_as_txt, summary_as_pdf, report_as_txt, report_as_pdf,
                            response_content)
 
