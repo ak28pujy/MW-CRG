@@ -66,9 +66,11 @@ def validate_inputs(company, model, language, num_urls_google_search, num_urls_g
 def get_driver_path(driver_name):
     os_name = platform.system()
     arch = 'intel' if 'x86_64' in platform.machine() or 'AMD64' in platform.machine() else 'arm'
-    os_name = 'windows' if os_name == 'Windows' else 'mac' if os_name == 'Darwin' else 'linux'
-    if (os_name == 'windows' or os_name == 'linux') and arch == 'arm':
-        raise ValueError(f"{os_name.capitalize()} ARM is not supported")
+    os_name = 'windows' if os_name == 'Windows' else 'mac' if os_name == 'Darwin' else None
+    if os_name is None:
+        raise ValueError("The current operating system is not supported.")
+    if os_name == 'windows' and arch == 'arm':
+        raise ValueError(f"{os_name.capitalize()} ARM is not supported.")
     exe_extension = '.exe' if os_name == 'windows' else ''
     return f"{DRIVERS_PATH}{os_name}/{arch}/{driver_name}{exe_extension}"
 
