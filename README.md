@@ -7,7 +7,11 @@
   - [Download without Git](https://github.com/ak28pujy/MW-CRG#download-without-git)
 - [Setup](https://github.com/ak28pujy/MW-CRG#setup)
   - [Windows](https://github.com/ak28pujy/MW-CRG#windows)
+      - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended)
+      - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2)
   - [macOS and Linux](https://github.com/ak28pujy/MW-CRG#macos-and-linux)
+      - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended-1)
+      - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2-1)
 - [Usage](https://github.com/ak28pujy/MW-CRG#usage)
 - [Files in the repository](https://github.com/ak28pujy/MW-CRG#files-in-the-repository)
 ## Introduction
