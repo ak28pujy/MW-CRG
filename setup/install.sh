@@ -23,8 +23,8 @@ while true; do
             python3 -m pip install --upgrade pip
             pip install -r requirements.txt
             deactivate
-			find ./driver/mac/ -type f -exec chmod +x {} \;
-			find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
+            find ./driver/mac/ -type f -exec chmod +x {} \;
+            find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
 
             echo "Finished."
 
