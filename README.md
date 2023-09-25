@@ -9,14 +9,14 @@
     - [Windows](https://github.com/ak28pujy/MW-CRG#windows)
         - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended)
         - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2)
-    - [macOS and Linux](https://github.com/ak28pujy/MW-CRG#macos-and-linux)
+    - [macOS](https://github.com/ak28pujy/MW-CRG#macos-and-linux)
         - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended-1)
         - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2-1)
 - [Usage](https://github.com/ak28pujy/MW-CRG#usage)
     - [Windows](https://github.com/ak28pujy/MW-CRG#windows-1)
         - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended-2)
         - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2-2)
-    - [macOS and Linux](https://github.com/ak28pujy/MW-CRG#macos-and-linux-1)
+    - [macOS](https://github.com/ak28pujy/MW-CRG#macos-and-linux-1)
 - [Files in the repository](https://github.com/ak28pujy/MW-CRG#files-in-the-repository)
 ## Introduction
 This project is a comprehensive tool for automatic data collection and analysis for businesses. It combines web scraping, Google search, RSS feed analysis and the OpenAI API to collect relevant information about a given company.
@@ -26,16 +26,13 @@ With the integrated GUI application, users can set specific search criteria and 
 The tool is especially useful for market analysts, researchers and anyone who needs a quick overview of a company and its activities on the web without having to manually browse through countless pages.
 ## Requirements
 To run this tool successfully, make sure that you meet the following requirements:
-
 1. Operating system (OS):
-  - Windows (x86_64/AMD64)
-  - Linux (x86_64/AMD64)
-  - MacOS (x86_64/AMD64 or ARM)
-2. Browser: Firefox or Chrome (latest version)
-3. Python Version 3.11 or newer: Can be downloaded [here](https://www.python.org/downloads/)
-4. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys)
-5. Google Custom Search JSON API Keys: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
-
+   - Windows 11 (x86_64/AMD64)
+   - macOS Version 13 or newer (x86_64/AMD64 or ARM)
+3. Browser: Firefox or Chrome (latest version)
+4. Python Version 3.11 or newer: Can be downloaded [here](https://www.python.org/downloads/)
+5. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys)
+6. Google Custom Search JSON API Keys: See documentation [here](https://developers.google.com/custom-search/v1/overview?hl=en)
 ## Download
 ### Download with Git
 1. Make sure you have [Git](https://git-scm.com/downloads) installed for your OS.
@@ -72,14 +69,14 @@ python -m venv venv
 ```
 pip install -r requirements.txt
 ```
-### macOS and Linux
+### macOS
 #### Option 1 (Recommended)
 1. Open a terminal window.
 2. Navigate to the folder ```setup``` (E.g. ```cd downloads/mw-crg-main/setup```), make the script executable (```chmod 755 install.sh```) and run install.sh (```./install.sh```). See documentation [here](https://support.apple.com/guide/terminal/apdd100908f-06b3-4e63-8a87-32e71241bab4/mac) for more information.
 3. Follow the instructions in the script.
 #### Option 2
-1. Navigate to the directory where you downloaded the repository.
-2. Open a CMD, Bash, or Powershell window in the directory and enter:
+1. Open a terminal window.
+2. Navigate to the directory where you downloaded the repository (E.g. ```cd downloads/mw-crg-main```) and enter:
 ```
 python -m venv venv
 ```
@@ -107,7 +104,7 @@ pip install -r requirements.txt
 python app.py
 ```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
-### macOS and Linux
+### macOS
 1. Open a terminal window.
 2. Navigate to the directory where you downloaded the repository (E.g. ```cd downloads/mw-crg-main```) and enter:
 ```
