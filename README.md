@@ -130,6 +130,8 @@ output.py: Contains functions for generating and saving output in various format
 
 requirements.txt: Lists all the dependencies of the project. To install all the required packages, run: ```pip install -r requirements.txt```
 
+.env: Contains environment variables for API keys (OpenAI and Google) and last search settings. Additionally, it offers miscellaneous settings such as task concurrency and page load timeouts. Ensure to replace XXXXXX placeholders with actual values.
+
 [Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
 
 [ChromeDriver](https://chromedriver.chromium.org): Version 117.0.5938.88
