@@ -72,13 +72,6 @@ pip install -r requirements.txt
 ```
 deactivate
 ```
-7. Change the permission for the drivers:
-```
-find ./driver/mac/ -type f -exec chmod +x {} \;
-```
-```
-find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
-```
 ### macOS
 #### Option 1 (Recommended)
 1. Open a terminal window.
@@ -96,6 +89,16 @@ source venv/bin/activate
 3. Install the required packages with:
 ```
 pip install -r requirements.txt
+```
+```
+deactivate
+```
+4. Change the permission for the drivers:
+```
+find ./driver/mac/ -type f -exec chmod +x {} \;
+```
+```
+find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
 ```
 ## Usage
 ### Windows
