@@ -55,9 +55,9 @@ To run this tool successfully, make sure that you meet the following requirement
 ```
 Set-ExecutionPolicy RemoteSigned
 ```
-3. You will probably be prompted for confirmation. Please accept and close the powershell.
+3. You will probably be prompted for confirmation. Please accept and close the PowerShell.
 4. Navigate to the directory where you downloaded the repository.
-5. Open a CMD, Bash, or Powershell window in the directory and enter:
+5. Right-click, select "Open in Terminal" and enter:
 ```
 python -m venv venv
 ```
@@ -71,7 +71,7 @@ pip install -r requirements.txt
 ### macOS and Linux
 #### Option 1 (Recommended)
 1. Open a terminal window.
-2. Navigate to the folder ```setup``` (E.g. ```cd download/mw-crg-main/setup```), make the script executable (```chmod 755 install.sh```) and run install.sh (```./install.sh```). See documentation [here](https://support.apple.com/guide/terminal/apdd100908f-06b3-4e63-8a87-32e71241bab4/mac) for more information.
+2. Navigate to the folder ```setup``` (E.g. ```cd downloads/mw-crg-main/setup```), make the script executable (```chmod 755 install.sh```) and run install.sh (```./install.sh```). See documentation [here](https://support.apple.com/guide/terminal/apdd100908f-06b3-4e63-8a87-32e71241bab4/mac) for more information.
 3. Follow the instructions in the script.
 #### Option 2
 1. Navigate to the directory where you downloaded the repository.
@@ -87,10 +87,25 @@ source venv/bin/activate
 pip install -r requirements.txt
 ```
 ## Usage
+### Windows
 1. Navigate to the directory where you downloaded the repository.
-2. Open a CMD, Bash, or Powershell window in the directory and enter:
-    1. Windows: ```.\venv\Scripts\activate```, macOS and Linux: ```source venv/bin/activate```
-    2. ```python app.py```
+2. Right-click, select "Open in Terminal" and enter:
+```
+.\venv\Scripts\activate
+```
+```
+python app.py
+```
+3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+### macOS and Linux
+1. Open a terminal window.
+2. Navigate to the directory where you downloaded the repository (E.g. ```cd downloads/mw-crg-main```) and enter:
+```
+source venv/bin/activate
+```
+```
+python app.py
+```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ## Files in the repository
 main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company and generate a summary report.
