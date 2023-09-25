@@ -1,5 +1,5 @@
 import os
-from datetime import date
+from datetime import datetime
 
 from docx import Document
 from reportlab.lib.pagesizes import letter
@@ -68,4 +68,5 @@ def write_content_to_pdf(company, content, file_type):
 
 
 def get_file_path(file_type, company):
-    return f'{OUTPUT_PATH}{date.today()} - {company} - {file_type}'
+    current_timestamp = datetime.now().strftime('%Y-%m-%d %H-%M')
+    return f'{OUTPUT_PATH}{current_timestamp} - {company} - {file_type}'

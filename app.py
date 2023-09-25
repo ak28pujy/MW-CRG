@@ -5,7 +5,7 @@ import subprocess
 import sys
 
 from PyQt6 import QtWidgets, QtGui, QtCore
-from PyQt6.QtCore import pyqtSignal, QThread, Qt
+from PyQt6.QtCore import pyqtSignal, QThread, Qt, QTimer
 from PyQt6.QtWidgets import QComboBox, QGroupBox, QFormLayout, QSizePolicy
 from dotenv import load_dotenv, set_key
 
@@ -178,6 +178,16 @@ class MyWidget(QtWidgets.QWidget):
         self.status_bar.showMessage("Ready...")
         self.initialize_inputs()
         self.initialize_layout()
+        self.loading_dots = 2
+        self.loading_timer = QTimer(self)
+        self.loading_timer.timeout.connect(self.update_loading_status)
+
+    def update_loading_status(self):
+        if self.loading_dots < 4:
+            self.loading_dots += 1
+        else:
+            self.loading_dots = 2
+        self.status_bar.showMessage("Loading" + "." * self.loading_dots)
 
     def initialize_inputs(self):
         self.company_input = create_input_line('COMPANY_NAME')
@@ -304,6 +314,7 @@ class MyWidget(QtWidgets.QWidget):
         self.log_console.verticalScrollBar().setValue(self.log_console.verticalScrollBar().maximum())
 
     def stop_loading(self):
+        self.loading_timer.stop()
         self.status_bar.showMessage("Ready...")
         QtWidgets.QMessageBox.information(self, "Finished", "The report was successfully created.")
         reply = QtWidgets.QMessageBox.question(self, "Open output folder", "Do you want to open the output folder now?",
@@ -343,7 +354,7 @@ class MyWidget(QtWidgets.QWidget):
         search_terms_google_search = search_terms_google_search.split(',') if search_terms_google_search else []
         search_terms_google_news = search_terms_google_news.split(',') if search_terms_google_news else []
 
-        self.status_bar.showMessage("Loading...")
+        self.loading_timer.start(500)
         self.main_thread = MainThread(company, search_terms_google_search, search_terms_google_news, model, language,
                                       num_urls_google_search, num_urls_google_news, summary_as_txt, summary_as_pdf,
                                       report_as_txt, report_as_pdf, company_info)
