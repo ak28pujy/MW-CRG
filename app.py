@@ -209,8 +209,8 @@ class MyWidget(QtWidgets.QWidget):
         self.set_default_values()
 
     def set_default_values(self):
-        self.num_urls_google_search_input.setValue(5)
-        self.num_urls_google_news_input.setValue(10)
+        self.num_urls_google_search_input.setValue(int(os.getenv('NUM_URLS_GOOGLE_SEARCH')))
+        self.num_urls_google_news_input.setValue(int(os.getenv('NUM_URLS_GOOGLE_NEWS')))
         self.model_dropdown.addItems(["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"])
         self.model_dropdown.setCurrentIndex(1)
         self.language_dropdown.addItems(["English", "German", "French"])
@@ -351,6 +351,8 @@ class MyWidget(QtWidgets.QWidget):
         set_key('.env', 'COMPANY_INFO', company_info)
         set_key('.env', 'SEARCH_TERMS_GOOGLE_SEARCH', search_terms_google_search)
         set_key('.env', 'SEARCH_TERMS_GOOGLE_NEWS', search_terms_google_news)
+        set_key('.env', 'NUM_URLS_GOOGLE_SEARCH', str(num_urls_google_search))
+        set_key('.env', 'NUM_URLS_GOOGLE_NEWS', str(num_urls_google_news))
         search_terms_google_search = search_terms_google_search.split(',') if search_terms_google_search else []
         search_terms_google_news = search_terms_google_news.split(',') if search_terms_google_news else []
 
