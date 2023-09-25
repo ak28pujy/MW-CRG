@@ -96,8 +96,15 @@ class InfoWindow(QtWidgets.QWidget):
     def initialize_layout(self):
         self.setWindowTitle('Information')
         layout = QtWidgets.QVBoxLayout()
-        info_label = QtWidgets.QLabel("Information about the program...")
+
+        link = "Homepage: <a href='https://github.com/ak28pujy/MW-CRG'>https://github.com/ak28pujy/MW-CRG</a>"
+        info_label = QtWidgets.QLabel(link)
+        info_label.setOpenExternalLinks(True)
+
+        description_label = QtWidgets.QLabel("")
+
         layout.addWidget(info_label)
+        layout.addWidget(description_label)
 
         ok_button = QtWidgets.QPushButton('OK', self)
         ok_button.setStyleSheet(BUTTON_STYLE)
