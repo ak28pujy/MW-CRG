@@ -1,5 +1,7 @@
 import asyncio
 import os
+import platform
+import subprocess
 import sys
 
 from PyQt6 import QtWidgets, QtGui, QtCore
@@ -8,6 +10,7 @@ from PyQt6.QtWidgets import QComboBox, QGroupBox, QFormLayout, QSizePolicy
 from dotenv import load_dotenv, set_key
 
 from main import main
+from output import OUTPUT_PATH
 
 load_dotenv()
 
@@ -303,6 +306,17 @@ class MyWidget(QtWidgets.QWidget):
     def stop_loading(self):
         self.status_bar.showMessage("Ready...")
         QtWidgets.QMessageBox.information(self, "Finished", "The report was successfully created.")
+        reply = QtWidgets.QMessageBox.question(self, "Open output folder", "Do you want to open the output folder now?",
+                                               QtWidgets.QMessageBox.StandardButton.Yes | QtWidgets.QMessageBox.StandardButton.No)
+        if reply == QtWidgets.QMessageBox.StandardButton.Yes:
+            os_name = platform.system()
+            output_path = os.path.abspath(OUTPUT_PATH)
+            if os_name == "Windows":
+                subprocess.run(["explorer", output_path])
+            elif os_name == "Darwin":
+                subprocess.run(["open", output_path])
+            elif os_name == "Linux":
+                subprocess.run(["xdg-open", output_path])
 
     def generate_report(self):
         company = self.company_input.text().strip()
@@ -362,11 +376,9 @@ class MainThread(QThread):
         stream = EmittingStream()
         stream.text_written.connect(self.log_signal.emit)
         sys.stdout = stream
-
         asyncio.run(main(self.company, self.search_terms_google_search, self.search_terms_google_news, self.model,
                          self.language, self.num_urls_google_search, self.num_urls_google_news, self.summary_as_txt,
                          self.summary_as_pdf, self.report_as_txt, self.report_as_pdf, self.company_info))
-
         sys.stdout = sys.__stdout__
 
 
