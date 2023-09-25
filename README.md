@@ -88,6 +88,12 @@ pip install -r requirements.txt
 ```
 ## Usage
 ### Windows
+#### Option 1 (Recommended)
+1. Navigate to the directory where you downloaded the repository.
+2. Open the folder ```setup```.
+3. Double click on ```run.vbs```.
+4. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+#### Option 2
 1. Navigate to the directory where you downloaded the repository.
 2. Right-click, select "Open in Terminal" and enter:
 ```
