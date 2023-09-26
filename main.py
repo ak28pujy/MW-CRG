@@ -17,6 +17,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.support.wait import WebDriverWait
 
 import counttokens
 import openai_prompt
@@ -35,9 +36,9 @@ load_dotenv()
 openai.api_key = os.getenv(OPENAI_API_KEY)
 google_api_key = os.getenv(GOOGLE_API_KEY)
 google_cse_id = os.getenv(GOOGLE_CSE_ID)
-semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 3)))
+semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 2)))
 max_concurrent_urls = int(os.getenv(MAX_CONCURRENT_URLS, 5))
-page_load_timeout = int(os.getenv(PAGE_LOAD_TIMEOUT, 15))
+page_load_timeout = int(os.getenv(PAGE_LOAD_TIMEOUT, 10))
 
 
 async def limited_execute(task, *args):
@@ -167,13 +168,16 @@ def get_page_content(browser, url):
     page_text = ""
     try:
         browser.get(url)
-        browser.set_page_load_timeout(page_load_timeout)
+        WebDriverWait(browser, page_load_timeout).until(
+            lambda d: d.execute_script('return document.readyState') == 'complete')
         if '.google.com' in url:
             try:
-                browser.find_element(By.XPATH, "//.[@aria-label='Alle akzeptieren']").click()
-                time.sleep(5)
+                browser.find_element(By.XPATH, "//*[@aria-label='Alle akzeptieren']").click()
+                WebDriverWait(browser, page_load_timeout).until(
+                    lambda d: d.execute_script('return document.readyState') == 'complete')
             except Exception as e:
                 print(f"\nError clicking the accept button on Google: {e}")
+        time.sleep(5)
         page_text = BeautifulSoup(browser.page_source, 'html.parser').get_text()
     except Exception as e:
         print(f"\nError fetching the URL {url}: {e}")
