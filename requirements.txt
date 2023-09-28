@@ -8,5 +8,6 @@ PyQt6_sip
 python-dotenv
 python_docx
 reportlab
+Requests
 selenium
 tiktoken

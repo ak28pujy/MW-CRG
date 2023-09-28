@@ -3,12 +3,12 @@ import os
 import platform
 import re
 import time
-import urllib.error
-import urllib.parse
 from concurrent.futures import ThreadPoolExecutor
+from urllib.parse import quote
 
 import feedparser
 import openai
+import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
@@ -116,13 +116,15 @@ def google_search(search_term, api_key, cse_id, **kwargs):
 
 def google_news_rss(search_term, num):
     try:
-        url = f"https://news.google.com/rss/search?q={urllib.parse.quote(search_term)}&hl=de&gl=DE&ceid=DE:de"
-        feed = feedparser.parse(url)
+        url = f"https://news.google.com/rss/search?q={quote(search_term)}&hl=de&gl=DE&ceid=DE:de"
+        response = requests.get(url)
+        response.raise_for_status()
+        feed = feedparser.parse(response.text)
         if not feed.entries:
             raise ValueError("No news entries found for this search query.")
         return [(entry.title, entry.link) for entry in feed.entries[:num]]
-    except urllib.error.URLError as e:
-        print(f"\nError accessing the URL: {e.reason}")
+    except requests.HTTPError as e:
+        print(f"\nError accessing the URL: {e}")
         return []
     except Exception as e:
         print(f"\nAn error has occurred: {str(e)}")
