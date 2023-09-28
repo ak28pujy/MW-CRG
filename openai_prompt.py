@@ -7,13 +7,11 @@ from aiohttp import ClientSession
 async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
     full_outputs = ""
-
     async with ClientSession() as session:
         openai.aiosession.set(session)
         tasks = []
         for search_term, info_url_list in info_dict.items():
             summarized_info[search_term] = []
-
             for info, url in info_url_list:
                 task = summarize_each_url(info, url, company, model, language, company_info)
                 tasks.append((task, search_term))
@@ -27,7 +25,6 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
                     full_outputs += full_output + "\n"
         except Exception as e:
             print(f"\nAn unexpected error has occurred: {str(e)}")
-
     await openai.aiosession.get().close()
     return summarized_info, full_outputs
 
@@ -54,7 +51,7 @@ async def summarize_each_url(info, url, company, model, language, company_info):
         return summary, url, full_output
     except Exception as e:
         print(f"\nAn error has occurred at URL: {url} - {str(e)}")
-        return e
+        return str(e), url, f"Error: {str(e)}"
 
 
 def summarize(info_dict, company, model, language, company_info):
