@@ -14,6 +14,7 @@ from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from selenium import webdriver
+from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.service import Service as ChromeService
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.service import Service as FirefoxService
@@ -173,12 +174,19 @@ def get_page_content(browser, url):
         WebDriverWait(browser, page_load_timeout).until(
             lambda d: d.execute_script('return document.readyState') == 'complete')
         if '.google.com' in url:
-            try:
-                browser.find_element(By.XPATH, "//*[@aria-label='Alle akzeptieren']").click()
-                WebDriverWait(browser, page_load_timeout).until(
-                    lambda d: d.execute_script('return document.readyState') == 'complete')
-            except Exception as e:
-                print(f"\nError clicking the accept button on Google: {e}")
+            buttons_to_try = ["//*[@aria-label='Alle akzeptieren']", "//*[@aria-label='Accept all']"]
+            button_clicked = False
+            for button_xpath in buttons_to_try:
+                try:
+                    browser.find_element(By.XPATH, button_xpath).click()
+                    WebDriverWait(browser, page_load_timeout).until(
+                        lambda d: d.execute_script('return document.readyState') == 'complete')
+                    button_clicked = True
+                    break
+                except NoSuchElementException:
+                    pass
+            if not button_clicked:
+                print("\nError clicking the accept button on Google.")
         time.sleep(5)
         page_text = BeautifulSoup(browser.page_source, 'html.parser').get_text()
     except Exception as e:
