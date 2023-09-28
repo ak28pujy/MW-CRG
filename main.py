@@ -122,7 +122,7 @@ def google_news_rss(search_term, num):
         response.raise_for_status()
         feed = feedparser.parse(response.text)
         if not feed.entries:
-            raise ValueError("No news entries found for this search query.")
+            raise ValueError("\nNo news entries found for this search query.")
         return [(entry.title, entry.link) for entry in feed.entries[:num]]
     except requests.HTTPError as e:
         print(f"\nError accessing the URL: {e}")

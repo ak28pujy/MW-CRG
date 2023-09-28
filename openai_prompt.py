@@ -21,12 +21,12 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
             results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
             for (summary, url, full_output), search_term in zip(results, [st for _, st in tasks]):
                 if isinstance(summary, Exception):
-                    print(f"An error has occurred at URL: {search_term} - {str(summary)}")
+                    print(f"\nAn error has occurred at URL: {search_term} - {str(summary)}")
                 else:
                     summarized_info[search_term].append((summary, url))
                     full_outputs += full_output + "\n"
         except Exception as e:
-            print(f"An unexpected error has occurred: {str(e)}")
+            print(f"\nAn unexpected error has occurred: {str(e)}")
 
     await openai.aiosession.get().close()
     return summarized_info, full_outputs
@@ -53,7 +53,7 @@ async def summarize_each_url(info, url, company, model, language, company_info):
         print(full_output)
         return summary, url, full_output
     except Exception as e:
-        print(f"An error has occurred at URL: {url} - {str(e)}")
+        print(f"\nAn error has occurred at URL: {url} - {str(e)}")
         return e
 
 
@@ -111,5 +111,5 @@ def summarize(info_dict, company, model, language, company_info):
                                                 frequency_penalty=0.0, presence_penalty=0.0)
         return response['choices'][0]['message']['content'], prompt, response
     except Exception as e:
-        print(f"An error occurred when summarizing the information for {company}: {str(e)}")
+        print(f"\nAn error occurred when summarizing the information for {company}: {str(e)}")
         return str(e), None, None
