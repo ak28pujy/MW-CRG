@@ -166,6 +166,7 @@ class MyApp(QtWidgets.QMainWindow):
 class MyWidget(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
+        self.generate_button = None
         self.company_input = None
         self.company_info_input = None
         self.search_terms_google_search_input = None
@@ -265,7 +266,8 @@ class MyWidget(QtWidgets.QWidget):
         self.log_console.setSizePolicy(QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Expanding)
         layout.addWidget(self.log_console, 1)
         layout.addWidget(self.status_bar)
-        layout.addWidget(self.create_generate_button())
+        self.generate_button = self.create_generate_button()
+        layout.addWidget(self.generate_button)
         self.setLayout(layout)
 
     def create_company_group(self):
@@ -335,8 +337,11 @@ class MyWidget(QtWidgets.QWidget):
                 subprocess.run(["open", output_path])
             elif os_name == "Linux":
                 subprocess.run(["xdg-open", output_path])
+        self.generate_button.setEnabled(True)
 
     def generate_report(self):
+        self.log_console.clear()
+        self.generate_button.setEnabled(False)
         company = self.company_input.text().strip()
         company_info = self.company_info_input.toPlainText().strip()
         search_terms_google_search = self.search_terms_google_search_input.toPlainText().strip()
