@@ -115,16 +115,6 @@ class InfoWindow(QtWidgets.QWidget):
         self.setStyleSheet("font-size: 12px;")
 
 
-class EmittingStream(QtCore.QObject):
-    text_written = pyqtSignal(str, name="text_written")
-
-    def write(self, text):
-        self.text_written.emit(str(text))
-
-    def flush(self):
-        pass
-
-
 class MyApp(QtWidgets.QMainWindow):
     def __init__(self):
         super().__init__()
@@ -377,6 +367,16 @@ class MyWidget(QtWidgets.QWidget):
         self.main_thread.start()
 
 
+class EmittingStream(QtCore.QObject):
+    text_written = pyqtSignal(str, name="text_written")
+
+    def write(self, text):
+        self.text_written.emit(str(text))
+
+    def flush(self):
+        pass
+
+
 class MainThread(QThread):
     log_signal = pyqtSignal(str)
 
@@ -398,13 +398,16 @@ class MainThread(QThread):
         self.company_info = company_info
 
     def run(self):
-        stream = EmittingStream()
-        stream.text_written.connect(self.log_signal.emit)
-        sys.stdout = stream
-        asyncio.run(main(self.company, self.search_terms_google_search, self.search_terms_google_news, self.model,
-                         self.language, self.num_urls_google_search, self.num_urls_google_news, self.summary_as_txt,
-                         self.summary_as_pdf, self.report_as_txt, self.report_as_pdf, self.company_info))
-        sys.stdout = sys.__stdout__
+        try:
+            stream = EmittingStream()
+            stream.text_written.connect(self.log_signal.emit)
+            sys.stdout = stream
+            asyncio.run(main(self.company, self.search_terms_google_search, self.search_terms_google_news, self.model,
+                             self.language, self.num_urls_google_search, self.num_urls_google_news, self.summary_as_txt,
+                             self.summary_as_pdf, self.report_as_txt, self.report_as_pdf, self.company_info))
+            sys.stdout = sys.__stdout__
+        except Exception as e:
+            print(f"Error: {e}")
 
 
 if __name__ == '__main__':

@@ -37,14 +37,8 @@ load_dotenv()
 openai.api_key = os.getenv(OPENAI_API_KEY)
 google_api_key = os.getenv(GOOGLE_API_KEY)
 google_cse_id = os.getenv(GOOGLE_CSE_ID)
-semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 2)))
 max_concurrent_urls = int(os.getenv(MAX_CONCURRENT_URLS, 5))
 page_load_timeout = int(os.getenv(PAGE_LOAD_TIMEOUT, 10))
-
-
-async def limited_execute(task, *args):
-    async with semaphore:
-        return await task(*args)
 
 
 def get_system_info():
@@ -63,6 +57,11 @@ def validate_inputs(company, model, language, num_urls_google_search, num_urls_g
         print(f"\nInvalid input. Number of URLs from Google News must not be higher than 15.")
         return False
     return True
+
+
+async def limited_execute(semaphore, task, *args):
+    async with semaphore:
+        return await task(*args)
 
 
 def get_driver_path(driver_name):
@@ -212,13 +211,14 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
     get_system_info()
     if not validate_inputs(company, model, language, num_urls_google_search, num_urls_google_news):
         return
+    semaphore = asyncio.Semaphore(int(os.getenv(MAX_CONCURRENT_TASKS, 2)))
     results_google_search, results_google_news = [], []
-    tasks_google_search = [limited_execute(execute_google_search, [term], google_search, num_urls_google_search) for
-                           term in
-                           search_terms_google_search] if search_terms_google_search and num_urls_google_search >= 1 else []
-    tasks_google_news = [limited_execute(execute_google_news_rss, [term], google_news_rss, num_urls_google_news) for
-                         term in
-                         search_terms_google_news] if search_terms_google_news and num_urls_google_news >= 1 else []
+    tasks_google_search = [
+        limited_execute(semaphore, execute_google_search, [term], google_search, num_urls_google_search) for term in
+        search_terms_google_search] if search_terms_google_search and num_urls_google_search >= 1 else []
+    tasks_google_news = [
+        limited_execute(semaphore, execute_google_news_rss, [term], google_news_rss, num_urls_google_news) for term in
+        search_terms_google_news] if search_terms_google_news and num_urls_google_news >= 1 else []
     if tasks_google_search or tasks_google_news:
         results_google_search, results_google_news = await asyncio.gather(asyncio.gather(*tasks_google_search),
                                                                           asyncio.gather(*tasks_google_news))
