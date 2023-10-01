@@ -4,6 +4,9 @@ import openai
 from aiohttp import ClientSession
 
 
+# Let's work this out in a step by step way to be sure we have the right answer.
+
+
 async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
     full_outputs = ""
@@ -31,17 +34,17 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
 
 async def summarize_each_url(info, url, company, model, language, company_info):
     try:
-        prompt = [{"role": "user",
-                   "content": f"Bitte analysiere die folgende Webseite ({url}), auf der {company} erwähnt wird, "
-                              "und erstelle eine prägnante Zusammenfassung der relevanten Informationen."},
-                  {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
-                  {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
-                                              "konkrete und nützliche Details, und vermeide dabei irrelevante "
-                                              "oder redundante Inhalte. "
-                                              f"Die Antwort sollte in {language} verfasst sein."}]
+        prompt = [
+            {"role": "user", "content": f"Bitte analysiere die folgende Webseite ({url}) und erstelle eine prägnante "
+                                        "Zusammenfassung der relevanten Informationen über das Unternehmen "
+                                        f"{company}. "},
+            {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
+            {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
+                                        f"konkrete und nützliche Details. Die Antwort soll in {language} verfasst "
+                                        "sein. Gehe dabei systematisch vor."}]
         if company_info:
-            company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
-                                                              f"{company}: {company_info}."}
+            company_info_prompt = {"role": "user", "content": "Achte insbesondere auf folgende Informationen: "
+                                                              f"{company_info}. "}
             prompt.insert(1, company_info_prompt)
         response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
@@ -56,12 +59,10 @@ async def summarize_each_url(info, url, company, model, language, company_info):
 
 def summarize(info_dict, company, model, language, company_info):
     try:
-        prompt = [{"role": "system",
-                   "content": "Du bist ein kenntnisreicher KI-Assistent, spezialisiert auf Unternehmensanalysen."},
+        prompt = [{"role": "system", "content": "Du bist ein hilfreicher Assistent. "},
                   {"role": "user", "content": "Bitte erstelle eine strukturierte Übersicht für die Kundenakquise eines "
                                               f"IT-Beratungsunternehmens, um {company} als Neukunden zu gewinnen. "
-                                              "Berücksichtige dabei die folgenden Aspekte und fasse im Anschluss "
-                                              "die Informationen in einem Fließtext zusammen:\n\n"
+                                              "Berücksichtige dabei die folgenden Aspekte:\n\n"
                                               "1. **Allgemeine Unternehmensinformationen:**\n"
                                               "   - Unternehmensname\n"
                                               "   - Gründungsdatum\n"
@@ -91,18 +92,18 @@ def summarize(info_dict, company, model, language, company_info):
             for info, url in info_url_list:
                 prompt.append(
                     {"role": "user", "content": "Hier sind zusätzliche Informationen, die ich auf einer Webseite "
-                                                f"({url}) gefunden habe, welche {company} erwähnt. "
-                                                "Diese wurden bereits von der OpenAI API in einer anderen Anfrage "
-                                                f"verarbeitet:\n\n\n{info}\n\n\n"})
-        prompt.append({"role": "user", "content": "Integriere bitte nur die relevanten Informationen bezüglich der "
-                                                  f"oben genannten Aspekte in den Steckbrief von {company}. "
-                                                  "Sollten einige Informationen fehlen, nutze dein allgemeines Wissen, "
-                                                  "wenn es sinnvoll und zutreffend ist, ansonsten lass das "
-                                                  "betreffende Feld leer. Gehe dabei systematisch vor und "
-                                                  f"antworte bitte in {language}."})
+                                                f"({url}) gefunden habe:\n\n\n{info}\n\n\n"})
+        prompt.append({"role": "user", "content": "Integriere bitte nur die relevanten Informationen und "
+                                                  "konkrete Zahlen bezüglich der oben genannten Aspekte in den "
+                                                  f"Steckbrief über {company}. Nutze zur Ergänzung dein "
+                                                  "allgemeines Wissen. Wenn kein Wissen oder Informationen zu einem "
+                                                  "der oben genannten Aspekte vorhanden sind, entferne das betreffende "
+                                                  "Feld. Fasse abschließend die oben genannten Aspekte zusätzlich "
+                                                  f"in einem Fließtext zusammen. Die Antwort soll in {language} "
+                                                  "verfasst sein. Gehe dabei systematisch vor."})
         if company_info:
-            company_info_prompt = {"role": "user", "content": f"Achte insbesondere auf folgende Informationen über "
-                                                              f"{company}: {company_info}."}
+            company_info_prompt = {"role": "user", "content": "Achte insbesondere auf folgende Informationen: "
+                                                              f"{company_info}. "}
             prompt.insert(2, company_info_prompt)
         response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
                                                 frequency_penalty=0.0, presence_penalty=0.0)
