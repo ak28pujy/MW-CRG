@@ -17,6 +17,8 @@
         - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended-2)
         - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2-2)
     - [macOS](https://github.com/ak28pujy/MW-CRG#macos-1)
+        - [Option 1 (Recommended)](https://github.com/ak28pujy/MW-CRG#option-1-recommended-3)
+        - [Option 2](https://github.com/ak28pujy/MW-CRG#option-2-3)
 - [Files in the repository](https://github.com/ak28pujy/MW-CRG#files-in-the-repository)
 ## Introduction
 This project is a comprehensive tool for automatic data collection and analysis for businesses. It combines web scraping, Google search, RSS feed analysis and the OpenAI API to collect relevant information about a given company.
