@@ -104,7 +104,7 @@ find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
 ### Windows
 #### Option 1 (Recommended)
 1. Navigate to the directory where you downloaded the repository.
-2. Open the folder ```setup```.
+2. Open the folder ```start```.
 3. Double click on ```run.vbs```.
 4. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 #### Option 2
@@ -118,6 +118,13 @@ python app.py
 ```
 3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 ### macOS
+#### Option 1 (Recommended)
+1. Navigate to the directory where you downloaded the repository.
+2. Open the folder ```start```.
+3. Double click on ```run.scpt```.
+4. Press the gray "Play" button in the upper right corner of the Script Editor.
+5. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+#### Option 2
 1. Open a terminal window.
 2. Navigate to the directory where you downloaded the repository (E.g. ```cd downloads/mw-crg-main```) and enter:
 ```
