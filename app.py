@@ -214,9 +214,9 @@ class MyWidget(QtWidgets.QWidget):
         self.language_dropdown.addItems(["English", "German", "French"])
         self.language_dropdown.setCurrentIndex(1)
         self.log_console.setReadOnly(True)
-        self.summary_as_txt_checkbox.setChecked(True)
+        self.summary_as_txt_checkbox.setChecked(False)
         self.summary_as_pdf_checkbox.setChecked(True)
-        self.report_as_txt_checkbox.setChecked(True)
+        self.report_as_txt_checkbox.setChecked(False)
         self.report_as_pdf_checkbox.setChecked(True)
 
     def max_google_search_urls(self):
@@ -269,7 +269,7 @@ class MyWidget(QtWidgets.QWidget):
         return company_group
 
     def create_search_group(self):
-        search_group = QGroupBox("Search Terms")
+        search_group = QGroupBox("Search terms")
         search_layout = QFormLayout()
         search_layout.addRow("Google Search:", self.search_terms_google_search_input)
         search_layout.addRow("Google News:", self.search_terms_google_news_input)
@@ -277,7 +277,7 @@ class MyWidget(QtWidgets.QWidget):
         return search_group
 
     def create_urls_group(self):
-        urls_group = QGroupBox("Number of URLs")
+        urls_group = QGroupBox("Number of URLs per search term")
         urls_layout = QFormLayout()
         urls_layout.addRow("Google Search:", self.num_urls_google_search_input)
         urls_layout.addRow("Google News:", self.num_urls_google_news_input)

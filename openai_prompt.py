@@ -19,7 +19,7 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
             results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
             for (summary, url, full_output), search_term in zip(results, [st for _, st in tasks]):
                 if isinstance(summary, Exception):
-                    print(f"\nAn error has occurred at URL: {search_term} - {str(summary)}")
+                    print(f"\nAn error has occurred at search term: {search_term} - {str(summary)}")
                 else:
                     summarized_info[search_term].append((summary, url))
                     full_outputs += full_output + "\n"
