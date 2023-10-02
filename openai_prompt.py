@@ -35,9 +35,7 @@ async def summarize_each_url(info, url, company, model, language, company_info):
                                               f"summary of relevant information about the company {company}. "},
                   {"role": "user", "content": f"Website content:\n\n\n{info}\n\n\n"},
                   {"role": "user", "content": "Focus on clear, concrete, and useful details when extracting "
-                                              f"information. The answer should be written in {language}. "
-                                              "Let's work this out in a step by step way to be sure "
-                                              "we have the right answer."}]
+                                              f"information. Please reply in {language}. "}]
         if company_info:
             company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
@@ -55,8 +53,7 @@ async def summarize_each_url(info, url, company, model, language, company_info):
 
 def summarize(info_dict, company, model, language, company_info):
     try:
-        prompt = [{"role": "system", "content": "You are a helpful assistant. "},
-                  {"role": "user", "content": "Please create a structured overview for an IT consulting firm's client "
+        prompt = [{"role": "user", "content": "Please create a structured overview for an IT consulting firm's client "
                                               f"acquisition efforts to attract {company} as a new client. "
                                               "Consider the following aspects:\n\n"
                                               "1. **General Company Information:**\n"
@@ -93,9 +90,7 @@ def summarize(info_dict, company, model, language, company_info):
                                                   "Use your general knowledge to complete. If there is no knowledge or "
                                                   "information on any of the above aspects, remove the relevant field. "
                                                   "Finally, summarize the above-mentioned aspects in a "
-                                                  f"continuous text. The answer should be written in {language}. "
-                                                  "Let's work this out in a step by step way to be sure "
-                                                  "we have the right answer."})
+                                                  f"continuous text. Please reply in {language}. "})
         if company_info:
             company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}

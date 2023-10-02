@@ -100,7 +100,7 @@ def get_browser(browser):
 def google_search(search_term, api_key, cse_id, **kwargs):
     try:
         service = build("customsearch", "v1", developerKey=api_key)
-        res = service.cse().list(q=search_term, cx=cse_id, **kwargs, cr='countryDE', gl='de', hl='de').execute()
+        res = service.cse().list(q=search_term, cx=cse_id, **kwargs, gl='de', hl='de').execute()
         if 'items' in res:
             return [(i['title'], i['link']) for i in res['items'] if 'title' in i and 'link' in i]
         else:

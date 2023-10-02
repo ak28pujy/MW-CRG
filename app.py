@@ -407,7 +407,7 @@ class MainThread(QThread):
                              self.summary_as_pdf, self.report_as_txt, self.report_as_pdf, self.company_info))
             sys.stdout = sys.__stdout__
         except Exception as e:
-            print(f"Error: {e}")
+            print(f"\nError: {e}")
 
 
 if __name__ == '__main__':
