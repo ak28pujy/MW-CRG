@@ -4,9 +4,6 @@ import openai
 from aiohttp import ClientSession
 
 
-# Let's work this out in a step by step way to be sure we have the right answer.
-
-
 async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
     full_outputs = ""
@@ -34,21 +31,20 @@ async def execute_summarize_each_url(info_dict, company, model, language, compan
 
 async def summarize_each_url(info, url, company, model, language, company_info):
     try:
-        prompt = [
-            {"role": "user", "content": f"Bitte analysiere die folgende Webseite ({url}) und erstelle eine prägnante "
-                                        "Zusammenfassung der relevanten Informationen über das Unternehmen "
-                                        f"{company}. "},
-            {"role": "user", "content": f"Inhalt der Webseite:\n\n\n{info}\n\n\n"},
-            {"role": "user", "content": "Fokussiere dich beim Extrahieren der Informationen auf klare, "
-                                        f"konkrete und nützliche Details. Die Antwort soll in {language} verfasst "
-                                        "sein. Gehe dabei systematisch vor."}]
+        prompt = [{"role": "user", "content": f"Please analyze the following web page ({url}) and create a brief "
+                                              f"summary of relevant information about the company {company}. "},
+                  {"role": "user", "content": f"Website content:\n\n\n{info}\n\n\n"},
+                  {"role": "user", "content": "Focus on clear, concrete, and useful details when extracting "
+                                              f"information. The answer should be written in {language}. "
+                                              "Let's work this out in a step by step way to be sure "
+                                              "we have the right answer."}]
         if company_info:
-            company_info_prompt = {"role": "user", "content": "Achte insbesondere auf folgende Informationen: "
+            company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
             prompt.insert(1, company_info_prompt)
-        response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
+        response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
-        full_output = f"\n{url}:\n\n{response['choices'][0]['message']['content']}"
+        full_output = f"\n{url} :\n\n{response['choices'][0]['message']['content']}"
         summary = response['choices'][0]['message']['content']
         print(full_output)
         return summary, url, full_output
@@ -59,53 +55,52 @@ async def summarize_each_url(info, url, company, model, language, company_info):
 
 def summarize(info_dict, company, model, language, company_info):
     try:
-        prompt = [{"role": "system", "content": "Du bist ein hilfreicher Assistent. "},
-                  {"role": "user", "content": "Bitte erstelle eine strukturierte Übersicht für die Kundenakquise eines "
-                                              f"IT-Beratungsunternehmens, um {company} als Neukunden zu gewinnen. "
-                                              "Berücksichtige dabei die folgenden Aspekte:\n\n"
-                                              "1. **Allgemeine Unternehmensinformationen:**\n"
-                                              "   - Unternehmensname\n"
-                                              "   - Gründungsdatum\n"
-                                              "   - Gründer\n"
-                                              "   - Aktueller CEO\n"
-                                              "   - Hauptsitz\n"
-                                              "   - Branche\n"
-                                              "   - Website des Unternehmens\n\n"
-                                              "2. **Produkt- und Dienstleistungsportfolio:**\n"
-                                              "   - Hauptprodukte und -dienstleistungen\n"
-                                              "   - USP oder Alleinstellungsmerkmale\n"
-                                              "   - Aussagen von Branchenexperten, Journalisten oder "
-                                              "anderen relevante Dritten\n\n"
-                                              "3. **Organisation und Mitarbeiter:**\n"
-                                              "   - Anzahl der Mitarbeiter\n"
-                                              "   - Organisationsstruktur\n\n"
-                                              "4. **Finanzielle und Marktinformationen:**\n"
-                                              "   - Geschäftszahlen\n"
-                                              "   - Marktposition\n\n"
-                                              "5. **Unternehmensstrategie, -vision und -reputation:**\n"
-                                              "   - Unternehmensmission und -vision\n"
-                                              "   - Geschäftliche Höhepunkte\n"
-                                              "   - Zukunftsprojekte\n"
-                                              "   - Soziale Verantwortung\n"
-                                              "   - Auszeichnungen und Anerkennungen\n\n"}]
+        prompt = [{"role": "system", "content": "You are a helpful assistant. "},
+                  {"role": "user", "content": "Please create a structured overview for an IT consulting firm's client "
+                                              f"acquisition efforts to attract {company} as a new client. "
+                                              "Consider the following aspects:\n\n"
+                                              "1. **General Company Information:**\n"
+                                              "   - Company name\n"
+                                              "   - Date of incorporation\n"
+                                              "   - Founder\n"
+                                              "   - Current CEO\n"
+                                              "   - Headquarters\n"
+                                              "   - Industry\n"
+                                              "   - Company website\n\n"
+                                              "2. **Product and service portfolio:**\n"
+                                              "   - Main products and services\n"
+                                              "   - Unique selling proposition (USP)\n"
+                                              "   - Statements from industry experts, journalists or "
+                                              "other relevant third parties\n\n"
+                                              "3. **Organization and staff:**\n"
+                                              "   - Number of employees\n"
+                                              "   - Organizational structure\n\n"
+                                              "4. **Financial and market information:**\n"
+                                              "   - Business figures\n"
+                                              "   - Market position\n\n"
+                                              "5. **Corporate strategy, vision and reputation:**\n"
+                                              "   - Corporate mission and vision\n"
+                                              "   - Business highlights\n"
+                                              "   - Future projects\n"
+                                              "   - Social responsibility\n"
+                                              "   - Awards and recognitions\n\n"}]
         for search_term, info_url_list in info_dict.items():
             for info, url in info_url_list:
-                prompt.append(
-                    {"role": "user", "content": "Hier sind zusätzliche Informationen, die ich auf einer Webseite "
-                                                f"({url}) gefunden habe:\n\n\n{info}\n\n\n"})
-        prompt.append({"role": "user", "content": "Integriere bitte nur die relevanten Informationen und "
-                                                  "konkrete Zahlen bezüglich der oben genannten Aspekte in den "
-                                                  f"Steckbrief über {company}. Nutze zur Ergänzung dein "
-                                                  "allgemeines Wissen. Wenn kein Wissen oder Informationen zu einem "
-                                                  "der oben genannten Aspekte vorhanden sind, entferne das betreffende "
-                                                  "Feld. Fasse abschließend die oben genannten Aspekte zusätzlich "
-                                                  f"in einem Fließtext zusammen. Die Antwort soll in {language} "
-                                                  "verfasst sein. Gehe dabei systematisch vor."})
+                prompt.append({"role": "user", "content": "Here is additional information I found on a website "
+                                                          f"({url}):\n\n\n{info}\n\n\n"})
+        prompt.append({"role": "user", "content": "Please integrate only the relevant information and concrete figures "
+                                                  f"regarding the above aspects in the profile about {company}. "
+                                                  "Use your general knowledge to complete. If there is no knowledge or "
+                                                  "information on any of the above aspects, remove the relevant field. "
+                                                  "Finally, summarize the above-mentioned aspects in a "
+                                                  f"continuous text. The answer should be written in {language}. "
+                                                  "Let's work this out in a step by step way to be sure "
+                                                  "we have the right answer."})
         if company_info:
-            company_info_prompt = {"role": "user", "content": "Achte insbesondere auf folgende Informationen: "
+            company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
             prompt.insert(2, company_info_prompt)
-        response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1, top_p=1.0, n=1,
+        response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
                                                 frequency_penalty=0.0, presence_penalty=0.0)
         return response['choices'][0]['message']['content'], prompt, response
     except Exception as e:
