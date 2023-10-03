@@ -94,7 +94,7 @@ def summarize(info_dict, company, model, language, company_info):
         if company_info:
             company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
-            prompt.insert(2, company_info_prompt)
+            prompt.insert(1, company_info_prompt)
         response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
                                                 frequency_penalty=0.0, presence_penalty=0.0)
         return response['choices'][0]['message']['content'], prompt, response
