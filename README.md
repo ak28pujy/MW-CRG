@@ -60,7 +60,7 @@ If you don't know what Git is, follow the ```Download without Git``` guide.
        2. Click on ```Customize installation```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
-       5. Check the box ```Add python.exe to PATH```.
+       5. Check the box ```Add Python to environment variables```.
        6. Click on ```Install```.
 3. Navigate to the directory where you downloaded the repository.
 4. Open the folder ```setup```.
@@ -80,7 +80,7 @@ If you don't know what Git is, follow the ```Download without Git``` guide.
        2. Click on ```Customize installation```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
-       5. Check the box ```Add python.exe to PATH```.
+       5. Check the box ```Add Python to environment variables```.
        6. Click on ```Install```.
 2. Start PowerShell as administrator:
      1. Press the ```Windows``` key.
