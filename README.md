@@ -31,7 +31,7 @@ To run this tool successfully, make sure that you meet the following requirement
 1. Operating system (OS):
    - Windows 10 or newer (x86_64/AMD64).
    - macOS 13 or newer (x86_64/AMD64 or ARM).
-        - Currently not working properly.
+        - Installable and usable, but not fully functional currently.
 3. Browser: Firefox or Chrome (latest version).
 4. Python version 3.11.6: Can be downloaded [here](https://www.python.org/downloads/release/python-3116/) at the bottom of the page.
    - Probably older Python version will work too (Please do not use newest Python version 3.12 at the moment).
