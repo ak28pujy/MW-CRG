@@ -153,4 +153,4 @@ requirements.txt: Lists all the dependencies of the project. To install all the 
 
 [Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
 
-[ChromeDriver](https://chromedriver.chromium.org): Version 117.0.5938.92
+[ChromeDriver](https://chromedriver.chromium.org): Version 117.0.5938.149
