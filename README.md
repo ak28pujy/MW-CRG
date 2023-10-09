@@ -45,7 +45,7 @@ If you don't know what Git is, follow the ```Download without Git``` guide.
 1. Make sure you have [Git](https://git-scm.com/downloads) installed for your OS.
 2. Clone the repository with: ```git clone https://github.com/ak28pujy/MW-CRG.git```.
 ### Download without Git
-1. Click on the green ```Code``` button at the top of this page and then on ```Download ZIP```.
+1. Click on the green ```<> Code``` button at the top of this page and then on ```Download ZIP```.
 2. Extract the zip-file into a folder.
 ## Setup
 ### Windows
