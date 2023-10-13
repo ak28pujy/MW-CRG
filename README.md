@@ -58,10 +58,11 @@ To run this tool successfully, make sure that you meet the following requirement
 4. Navigate to the directory where you downloaded the project.
 5. Open the folder ```setup```.
 6. Right-click on ```install.bat``` and select ```Run as administrator```.
-7. Press the ```1``` key and then press the ```Enter``` key.
-8. Wait for the dependencies to be installed.
-9. Follow the instructions in the script.
-10. If you have launched the app directly, make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+7. When Windows Smartscreen pops up, click on ```More info``` and then on ```Run anyway```. (More information about Microsoft Defender SmartScreen [here](https://learn.microsoft.com/en-us/windows/security/operating-system-security/virus-and-threat-protection/microsoft-defender-smartscreen/))
+8. Press the ```1``` key and then press the ```Enter``` key.
+9. Wait for the dependencies to be installed.
+10. Follow the instructions in the script.
+11. If you have launched the app directly, make sure that the correct API keys are set. These can be changed under Menu and then Settings.
 #### Option 2
 1. Click [here](https://github.com/ak28pujy/MW-CRG/archive/refs/heads/main.zip) to download the project.
 2. Extract the zip-file into a folder.
