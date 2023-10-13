@@ -46,13 +46,15 @@ To run this tool successfully, make sure that you meet the following requirement
        1. Double click on ```python-3.11.6-amd64.exe```.
        2. Check the box ```Add python.exe to PATH```.
        3. Click on ```Install Now```.
+       4. Wait until the installation is finished and click ```Close```.
     2. If Python is already installed:
        1. Double click on ```python-3.11.6-amd64.exe```.
-       2. Click on ```Customize installation```.
+       2. Click on ```Customize installation``` or ```Modify```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
        5. Check the box ```Add Python to environment variables```.
        6. Click on ```Install```.
+       7. Wait until the installation is finished and click ```Close```.
 4. Navigate to the directory where you downloaded the project.
 5. Open the folder ```setup```.
 6. Right-click on ```install.bat``` and select ```Run as administrator```.
@@ -68,13 +70,15 @@ To run this tool successfully, make sure that you meet the following requirement
        1. Double click on ```python-3.11.6-amd64.exe```.
        2. Check the box ```Add python.exe to PATH```.
        3. Click on ```Install Now```.
+       4. Wait until the installation is finished and click ```Close```.
     2. If Python is already installed:
        1. Double click on ```python-3.11.6-amd64.exe```.
-       2. Click on ```Customize installation```.
+       2. Click on ```Customize installation``` or ```Modify```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
        5. Check the box ```Add Python to environment variables```.
        6. Click on ```Install```.
+       7. Wait until the installation is finished and click ```Close```.
 4. Start PowerShell as administrator:
      1. Press the ```Windows``` key.
      2. Type ```PowerShell```.
