@@ -63,6 +63,7 @@ To run this tool successfully, make sure that you meet the following requirement
 9. Wait for the dependencies to be installed.
 10. Follow the instructions in the script.
 11. If you have launched the app directly, make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+12. Please restart the app after changing the API keys.
 #### Option 2
 1. Click [here](https://github.com/ak28pujy/MW-CRG/archive/refs/heads/main.zip) to download the project.
 2. Extract the zip-file into a folder.
@@ -113,6 +114,7 @@ deactivate
 5. Wait for the dependencies to be installed.
 6. Follow the instructions in the script.
 7. If you have launched the app directly, make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+8. Please restart the app after changing the API keys.
 #### Option 2
 1. Click [here](https://github.com/ak28pujy/MW-CRG/archive/refs/heads/main.zip) to download the project.
 2. Open a terminal window.
@@ -143,7 +145,7 @@ find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
 1. Navigate to the directory where you downloaded the project.
 2. Open the folder ```start```.
 3. Double click on ```run.vbs```.
-4. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+4. Make sure that the correct API keys are set. These can be changed under Menu and then Settings. If you change the API keys, restart the app
 #### Option 2
 1. Navigate to the directory where you downloaded the project.
 2. Right-click, select ```Open in Terminal``` and enter:
@@ -153,14 +155,14 @@ find ./driver/mac/ -type f -exec xattr -d com.apple.quarantine {} \;
 ```
 python app.py
 ```
-3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings. If you change the API keys, restart the app
 ### macOS
 #### Option 1 (Recommended)
 1. Navigate to the directory where you downloaded the project.
 2. Open the folder ```start```.
 3. Double click on ```run.scpt```.
 4. Press the gray ```Play``` button in the upper right corner of the Script Editor.
-5. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+5. Make sure that the correct API keys are set. These can be changed under Menu and then Settings. If you change the API keys, restart the app
 #### Option 2
 1. Open a terminal window.
 2. Navigate to the directory where you downloaded the project (E.g. ```cd downloads/mw-crg-main```) and enter:
@@ -170,7 +172,7 @@ source venv/bin/activate
 ```
 python app.py
 ```
-3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings.
+3. Make sure that the correct API keys are set. These can be changed under Menu and then Settings. If you change the API keys, restart the app
 ## Files in this project
 main.py: Main script that drives data collection, analysis and reporting. It uses both the Google API and the OpenAI API to collect relevant information about a given company and generate a summary report.
 
