@@ -30,8 +30,8 @@ To run this tool successfully, make sure that you meet the following requirement
    - macOS 13 or newer (x86_64/AMD64 or ARM).
         - Installable and usable, but not fully functional currently.
 3. Browser: Firefox or Chrome (latest version).
-4. Python version 3.11.6: Can be downloaded [here](https://www.python.org/downloads/release/python-3116/) at the bottom of the page.
-   - Probably older Python version will work too (Please do not use newest Python version 3.12 at the moment).
+4. Python version 3.12.2: Can be downloaded [here](https://www.python.org/downloads/).
+   - Probably older Python version will work too.
    - Usually Python is preinstalled on macOS.
    - Make sure that Python is set as system environment variable under Windows.
 6. OpenAI API Key: Can be created [here](https://platform.openai.com/account/api-keys).
@@ -41,14 +41,14 @@ To run this tool successfully, make sure that you meet the following requirement
 #### Option 1 (Recommended)
 1. Click [here](https://github.com/ak28pujy/MW-CRG/archive/refs/heads/main.zip) to download the project.
 2. Extract the zip-file into a folder.
-3. Click [here](https://www.python.org/ftp/python/3.11.6/python-3.11.6-amd64.exe) to download Python version 3.11.6.
+3. Click [here](https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe) to download Python version 3.12.2.
     1. If Python is not yet installed:
-       1. Double click on ```python-3.11.6-amd64.exe```.
+       1. Double click on ```python-3.12.2-amd64.exe```.
        2. Check the box ```Add python.exe to PATH```.
        3. Click on ```Install Now```.
        4. Wait until the installation is finished and click ```Close```.
     2. If Python is already installed:
-       1. Double click on ```python-3.11.6-amd64.exe```.
+       1. Double click on ```python-3.12.2-amd64.exe```.
        2. Click on ```Customize installation``` or ```Modify```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
@@ -67,14 +67,14 @@ To run this tool successfully, make sure that you meet the following requirement
 #### Option 2
 1. Click [here](https://github.com/ak28pujy/MW-CRG/archive/refs/heads/main.zip) to download the project.
 2. Extract the zip-file into a folder.
-3. Click [here](https://www.python.org/ftp/python/3.11.6/python-3.11.6-amd64.exe) to download Python version 3.11.6.
+3. Click [here](https://www.python.org/ftp/python/3.12.2/python-3.12.2-amd64.exe) to download Python version 3.12.2.
     1. If Python is not yet installed:
-       1. Double click on ```python-3.11.6-amd64.exe```.
+       1. Double click on ```python-3.12.2-amd64.exe```.
        2. Check the box ```Add python.exe to PATH```.
        3. Click on ```Install Now```.
        4. Wait until the installation is finished and click ```Close```.
     2. If Python is already installed:
-       1. Double click on ```python-3.11.6-amd64.exe```.
+       1. Double click on ```python-3.12.2-amd64.exe```.
        2. Click on ```Customize installation``` or ```Modify```.
        3. Make sure that there is a check mark everywhere under ```Optional Features```.
        4. Click on ```Next```.
@@ -188,6 +188,6 @@ requirements.txt: Lists all the dependencies of the project. To install all the 
 
 .env: Contains environment variables for API keys (OpenAI and Google) and last search settings. Additionally, it offers miscellaneous settings such as task concurrency and page load timeouts. Ensure to replace XXXXXX placeholders with actual values.
 
-[Geckodriver](https://github.com/mozilla/geckodriver): Version 0.33.0
+[Geckodriver](https://github.com/mozilla/geckodriver): Version 0.34.0
 
-[ChromeDriver](https://chromedriver.chromium.org): Version 118.0.5993.70
+[ChromeDriver](https://chromedriver.chromium.org): Version 121.0.6167.184

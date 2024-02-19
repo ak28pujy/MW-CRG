@@ -209,7 +209,7 @@ class MyWidget(QtWidgets.QWidget):
     def set_default_values(self):
         self.num_urls_google_search_input.setValue(int(os.getenv('NUM_URLS_GOOGLE_SEARCH')))
         self.num_urls_google_news_input.setValue(int(os.getenv('NUM_URLS_GOOGLE_NEWS')))
-        self.model_dropdown.addItems(["gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"])
+        self.model_dropdown.addItems(["gpt-3.5-turbo", "gpt-3.5-turbo-0125", "gpt-4-turbo-preview", "gpt-4-0125-preview"])
         self.model_dropdown.setCurrentIndex(1)
         self.language_dropdown.addItems(["English", "German", "French"])
         self.language_dropdown.setCurrentIndex(1)

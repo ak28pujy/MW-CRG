@@ -7,12 +7,12 @@ from concurrent.futures import ThreadPoolExecutor
 from urllib.parse import quote
 
 import feedparser
-import openai
 import requests
 from bs4 import BeautifulSoup
 from dotenv import load_dotenv
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from openai import AsyncOpenAI
 from selenium import webdriver
 from selenium.common import NoSuchElementException
 from selenium.webdriver.chrome.service import Service as ChromeService
@@ -34,7 +34,7 @@ PAGE_LOAD_TIMEOUT = 'PAGE_LOAD_TIMEOUT'
 DRIVERS_PATH = './driver/'
 
 load_dotenv()
-openai.api_key = os.getenv(OPENAI_API_KEY)
+client = AsyncOpenAI(api_key = os.getenv(OPENAI_API_KEY))
 google_api_key = os.getenv(GOOGLE_API_KEY)
 google_cse_id = os.getenv(GOOGLE_CSE_ID)
 max_concurrent_urls = int(os.getenv(MAX_CONCURRENT_URLS, 5))
@@ -196,12 +196,12 @@ def get_page_content(browser, url):
     return page_text
 
 
-def generate_report(info_dict, company, model, language, company_info):
-    response_content, prompt, response = openai_prompt.summarize(info_dict, company, model, language, company_info)
+async def generate_report(info_dict, company, model, language, company_info):
+    response_content, prompt, response = await openai_prompt.summarize(info_dict, company, model, language, company_info)
     print(f"\nModel: {model}")
     print(
         f"\n{counttokens.num_tokens_from_messages(prompt, model)} prompt tokens counted by num_tokens_from_messages().")
-    print(f'{response["usage"]["prompt_tokens"]} prompt tokens counted by the OpenAI API.')
+    print(f'{response.usage.prompt_tokens} prompt tokens counted by the OpenAI API.')
     print(f"\nResult for the company {company}:\n\n{response_content}")
     return response_content
 
@@ -230,7 +230,7 @@ async def main(company, search_terms_google_search, search_terms_google_news, mo
         print(f"\nFound URL(s) for the search term '{search_term}': {', '.join(url for info, url in info_url_list)}")
     info_dict_all, full_outputs = await (
         openai_prompt.execute_summarize_each_url(info_dict_all, company, model, language, company_info))
-    response_content = generate_report(info_dict_all, company, model, language, company_info)
+    response_content = await generate_report(info_dict_all, company, model, language, company_info)
     output.generate_output(company, full_outputs, summary_as_txt, summary_as_pdf, report_as_txt, report_as_pdf,
                            response_content)
 
@@ -239,7 +239,7 @@ if __name__ == "__main__":
     company_1 = "Apple"
     search_terms_google_search_2 = [company_1]
     search_terms_google_news_3 = [company_1]
-    model_4 = "gpt-3.5-turbo-16k"  # "gpt-3.5-turbo", "gpt-3.5-turbo-16k", "gpt-4", "gpt-4-32k"
+    model_4 = "gpt-3.5-turbo-0125"  # "gpt-3.5-turbo", "gpt-3.5-turbo-0125", "gpt-4-turbo-preview", "gpt-4-0125-preview"
     language_5 = "German"  # "English", "German", "French"
     num_urls_google_search_6 = 3
     num_urls_google_news_7 = 3

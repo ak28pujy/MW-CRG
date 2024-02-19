@@ -1,31 +1,26 @@
 import asyncio
 
-import openai
-from aiohttp import ClientSession
-
+import main
 
 async def execute_summarize_each_url(info_dict, company, model, language, company_info):
     summarized_info = {}
     full_outputs = ""
-    async with ClientSession() as session:
-        openai.aiosession.set(session)
-        tasks = []
-        for search_term, info_url_list in info_dict.items():
-            summarized_info[search_term] = []
-            for info, url in info_url_list:
-                task = summarize_each_url(info, url, company, model, language, company_info)
-                tasks.append((task, search_term))
-        try:
-            results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
-            for (summary, url, full_output), search_term in zip(results, [st for _, st in tasks]):
-                if isinstance(summary, Exception):
-                    print(f"\nAn error has occurred at search term: {search_term} - {str(summary)}")
-                else:
-                    summarized_info[search_term].append((summary, url))
-                    full_outputs += full_output + "\n"
-        except Exception as e:
-            print(f"\nAn unexpected error has occurred: {str(e)}")
-    await openai.aiosession.get().close()
+    tasks = []
+    for search_term, info_url_list in info_dict.items():
+        summarized_info[search_term] = []
+        for info, url in info_url_list:
+            task = summarize_each_url(info, url, company, model, language, company_info)
+            tasks.append((task, search_term))
+    try:
+        results = await asyncio.gather(*[t for t, _ in tasks], return_exceptions=True)
+        for (summary, url, full_output), search_term in zip(results, [st for _, st in tasks]):
+            if isinstance(summary, Exception):
+                print(f"\nAn error has occurred at search term: {search_term} - {str(summary)}")
+            else:
+                summarized_info[search_term].append((summary, url))
+                full_outputs += full_output + "\n"
+    except Exception as e:
+        print(f"\nAn unexpected error has occurred: {str(e)}")
     return summarized_info, full_outputs
 
 
@@ -40,10 +35,10 @@ async def summarize_each_url(info, url, company, model, language, company_info):
             company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
             prompt.insert(1, company_info_prompt)
-        response = await openai.ChatCompletion.acreate(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
+        response = await main.client.chat.completions.create(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
                                                        frequency_penalty=0.0, presence_penalty=0.0)
-        full_output = f"\n{url} :\n\n{response['choices'][0]['message']['content']}"
-        summary = response['choices'][0]['message']['content']
+        full_output = f"\n{url} :\n\n{response.choices[0].message.content}"
+        summary = response.choices[0].message.content
         print(full_output)
         return summary, url, full_output
     except Exception as e:
@@ -51,7 +46,7 @@ async def summarize_each_url(info, url, company, model, language, company_info):
         return str(e), url, f"Error: {str(e)}"
 
 
-def summarize(info_dict, company, model, language, company_info):
+async def summarize(info_dict, company, model, language, company_info):
     try:
         prompt = [{"role": "user", "content": "Please create a structured overview for an IT consulting firm's client "
                                               f"acquisition efforts to attract {company} as a new client. "
@@ -95,9 +90,9 @@ def summarize(info_dict, company, model, language, company_info):
             company_info_prompt = {"role": "user", "content": "Pay particular attention to the following information: "
                                                               f"{company_info}. "}
             prompt.insert(1, company_info_prompt)
-        response = openai.ChatCompletion.create(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
+        response = await main.client.chat.completions.create(model=model, messages=prompt, temperature=1.0, top_p=1.0, n=1,
                                                 frequency_penalty=0.0, presence_penalty=0.0)
-        return response['choices'][0]['message']['content'], prompt, response
+        return response.choices[0].message.content, prompt, response
     except Exception as e:
         print(f"\nAn error occurred when summarizing the information for {company}: {str(e)}")
         return str(e), None, None
